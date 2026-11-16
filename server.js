@@ -1,5 +1,5 @@
 // Cù Lao Giêng travel site — zero-dependency Node server (Node 18+).
-// Serves /public, proxies the AI guide to the Claude API, stores bookings/orders as JSON.
+// Serves /public, proxies the AI guide to the xAI Grok API, stores bookings/orders as JSON.
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -15,8 +15,8 @@ if (fs.existsSync(envFile)) {
 }
 
 const PORT = Number(process.env.PORT) || 3000;
-const API_KEY = process.env.ANTHROPIC_API_KEY || "";
-const MODEL = process.env.CLAUDE_MODEL || "claude-sonnet-5-5";
+const API_KEY = process.env.XAI_API_KEY || "";
+const MODEL = process.env.GROK_MODEL || "grok-4";
 const PUBLIC = path.join(__dirname, "public");
 const STORE = path.join(__dirname, "data");
 fs.mkdirSync(STORE, { recursive: true });
@@ -51,15 +51,21 @@ DỮ LIỆU:
 ${knowledgeBase()}`;
 }
 
-async function callClaude(messages, lang, userPos) {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
+// xAI Grok API (OpenAI-compatible chat completions)
+async function callGrok(messages, lang, userPos) {
+  const r = await fetch("https://api.x.ai/v1/chat/completions", {
     method: "POST",
-    headers: { "content-type": "application/json", "x-api-key": API_KEY, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({ model: MODEL, max_tokens: 800, system: systemPrompt(lang, userPos), messages }),
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${API_KEY}` },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 800,
+      temperature: 0.6,
+      messages: [{ role: "system", content: systemPrompt(lang, userPos) }, ...messages],
+    }),
   });
-  if (!r.ok) throw new Error(`Claude API ${r.status}: ${await r.text()}`);
+  if (!r.ok) throw new Error(`Grok API ${r.status}: ${await r.text()}`);
   const j = await r.json();
-  return j.content.filter((c) => c.type === "text").map((c) => c.text).join("\n").trim();
+  return (j.choices?.[0]?.message?.content || "").trim();
 }
 
 // Offline fallback: keyword search over the knowledge base
@@ -122,7 +128,7 @@ async function api(req, res, url) {
     const last = messages[messages.length - 1].content;
     if (!API_KEY) return send(res, 200, { reply: offlineAnswer(last, lang), offline: true });
     try {
-      return send(res, 200, { reply: await callClaude(messages, lang, userPos) });
+      return send(res, 200, { reply: await callGrok(messages, lang, userPos) });
     } catch (e) {
       console.error(e.message);
       return send(res, 200, { reply: offlineAnswer(last, lang), offline: true });
@@ -185,5 +191,5 @@ http.createServer(async (req, res) => {
     send(res, 500, { error: "server error" });
   }
 }).listen(PORT, () => {
-  console.log(`Cù Lao Giêng site: http://localhost:${PORT}  (AI: ${API_KEY ? MODEL : "offline mode — set ANTHROPIC_API_KEY in .env"})`);
+  console.log(`Cù Lao Giêng site: http://localhost:${PORT}  (AI: ${API_KEY ? MODEL : "offline mode — set XAI_API_KEY in .env"})`);
 });
