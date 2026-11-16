@@ -1,0 +1,13 @@
+{
+  "name": "cu-lao-gieng-travel",
+  "version": "1.0.0",
+  "description": "Website du lịch Cù Lao Giêng: bản đồ GPS, hướng dẫn viên AI, ẩm thực, trải nghiệm, homestay, đặc sản (VI/EN)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

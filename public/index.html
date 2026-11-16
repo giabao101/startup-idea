@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cù Lao Giêng — Trợ lý du lịch AI</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home">🥭 <span data-i18n="brand">Cù Lao Giêng</span></a>
+    <nav class="nav" id="nav">
+      <a href="#map" data-i18n="nav.map">Bản đồ</a>
+      <a href="#guide" data-i18n="nav.guide">Hướng dẫn AI</a>
+      <a href="#food" data-i18n="nav.food">Ẩm thực</a>
+      <a href="#experience" data-i18n="nav.exp">Trải nghiệm</a>
+      <a href="#stay" data-i18n="nav.stay">Homestay</a>
+      <a href="#shop" data-i18n="nav.shop">Đặc sản</a>
+    </nav>
+    <div class="top-actions">
+      <button id="cartBtn" class="icon-btn" aria-label="Cart">🛒 <span id="cartCount">0</span></button>
+      <button id="langBtn" class="lang-btn">EN</button>
+      <button id="menuBtn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section id="home" class="hero">
+      <div class="hero-inner">
+        <h1 data-i18n="hero.title">Khám phá Cù Lao Giêng</h1>
+        <p data-i18n="hero.sub">Vùng đất thánh giữa sông Tiền — nhà thờ cổ, tu viện trăm năm, vườn xoài trĩu quả và con người hiền hòa.</p>
+        <div class="hero-cta">
+          <a href="#map" class="btn primary" data-i18n="hero.cta1">📍 Xem quanh tôi</a>
+          <a href="#guide" class="btn ghost" data-i18n="hero.cta2">🤖 Hỏi hướng dẫn viên AI</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map" class="section">
+      <h2 data-i18n="map.title">Bản đồ thông minh</h2>
+      <p class="muted" data-i18n="map.sub">Bật GPS để xem các điểm gần bạn. Nhấn vào điểm để xem thông tin.</p>
+      <div class="filters" id="mapFilters">
+        <button class="chip active" data-cat="all" data-i18n="cat.all">Tất cả</button>
+        <button class="chip" data-cat="history" data-i18n="cat.history">🏛️ Di tích lịch sử</button>
+        <button class="chip" data-cat="scenic" data-i18n="cat.scenic">🌅 Danh lam thắng cảnh</button>
+        <button class="chip" data-cat="garden" data-i18n="cat.garden">🥭 Vườn trái cây</button>
+        <button class="chip" data-cat="food" data-i18n="cat.food">🍲 Quán ăn</button>
+        <button class="chip" data-cat="stay" data-i18n="cat.stay">🏡 Homestay</button>
+        <button class="btn small primary" id="locateBtn" data-i18n="map.locate">📍 Vị trí của tôi</button>
+      </div>
+      <div class="map-wrap">
+        <div id="leaflet"></div>
+        <aside class="nearby">
+          <h3 data-i18n="map.nearby">Gần bạn</h3>
+          <p class="muted small" id="gpsStatus" data-i18n="map.gpsOff">Chưa bật định vị — đang tính từ trung tâm cù lao.</p>
+          <ul id="nearbyList"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- AI GUIDE -->
+    <section id="guide" class="section alt">
+      <h2 data-i18n="guide.title">Hướng dẫn viên AI</h2>
+      <p class="muted" data-i18n="guide.sub">Hỏi về lịch sử, kiến trúc, văn hóa, món ăn hay lịch trình. Hỗ trợ tiếng Việt và tiếng Anh.</p>
+      <div class="guide-wrap">
+        <div class="chat">
+          <div id="chatLog" class="chat-log"></div>
+          <div class="suggest" id="suggest"></div>
+          <form id="chatForm" class="chat-form">
+            <input id="chatInput" autocomplete="off" data-i18n-ph="guide.ph" placeholder="Nhập câu hỏi..." />
+            <button class="btn primary" data-i18n="guide.send">Gửi</button>
+          </form>
+        </div>
+        <div class="story-panel">
+          <h3 data-i18n="guide.stories">Kể chuyện tại điểm đến</h3>
+          <div id="storyList" class="story-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOD -->
+    <section id="food" class="section">
+      <h2 data-i18n="food.title">Ẩm thực địa phương</h2>
+      <div id="foodGrid" class="grid"></div>
+      <h3 class="mt" data-i18n="food.eat">Gợi ý quán ăn</h3>
+      <div id="eateryGrid" class="grid"></div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="section alt">
+      <h2 data-i18n="exp.title">Trải nghiệm cùng người dân</h2>
+      <p class="muted" data-i18n="exp.sub">Liên hệ trực tiếp chủ vườn, nghệ nhân để đặt lịch tham quan.</p>
+      <div id="expGrid" class="grid"></div>
+    </section>
+
+    <!-- STAY -->
+    <section id="stay" class="section">
+      <h2 data-i18n="stay.title">Homestay & lưu trú</h2>
+      <div id="stayGrid" class="grid"></div>
+    </section>
+
+    <!-- SHOP -->
+    <section id="shop" class="section alt">
+      <h2 data-i18n="shop.title">Đặc sản & sản phẩm địa phương</h2>
+      <p class="muted" data-i18n="shop.sub">Mua trực tiếp từ người dân — giao tận nơi hoặc nhận tại vườn.</p>
+      <div id="shopGrid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p data-i18n="footer">© Cù Lao Giêng — Du lịch cộng đồng. Dữ liệu người dân hiện là dữ liệu mẫu (demo).</p>
+  </footer>
+
+  <!-- Place detail / booking modal -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Cart drawer -->
+  <aside id="cart" class="drawer hidden">
+    <div class="drawer-head">
+      <h3 data-i18n="cart.title">Giỏ hàng</h3>
+      <button class="modal-close" id="cartClose">✕</button>
+    </div>
+    <ul id="cartItems"></ul>
+    <p class="cart-total"><span data-i18n="cart.total">Tổng</span>: <b id="cartTotal">0đ</b></p>
+    <form id="orderForm" class="form">
+      <input name="name" required data-i18n-ph="form.name" placeholder="Họ tên" />
+      <input name="phone" required pattern="[0-9+ ]{8,15}" data-i18n-ph="form.phone" placeholder="Số điện thoại" />
+      <input name="address" data-i18n-ph="form.address" placeholder="Địa chỉ giao hàng (bỏ trống nếu nhận tại vườn)" />
+      <textarea name="note" rows="2" data-i18n-ph="form.note" placeholder="Ghi chú"></textarea>
+      <button class="btn primary full" data-i18n="cart.order">Đặt hàng</button>
+    </form>
+  </aside>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
