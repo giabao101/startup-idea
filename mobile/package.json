@@ -1,0 +1,22 @@
+{
+  "name": "cu-lao-gieng-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Android app Cù Lao Giêng (Capacitor)",
+  "scripts": {
+    "copy-web": "node scripts/copy-web.js",
+    "icons": "capacitor-assets generate --android --iconBackgroundColor \"#0e4a47\" --splashBackgroundColor \"#0e4a47\"",
+    "sync": "npm run copy-web && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/geolocation": "^7.0.0",
+    "@capacitor/haptics": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.0.0"
+  }
+}

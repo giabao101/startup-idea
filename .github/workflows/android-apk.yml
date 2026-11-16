@@ -1,0 +1,74 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", "public/js/icons.js", "public/data/content.json", ".github/workflows/android-apk.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Bundle web files
+        run: npm run copy-web
+
+      - name: Create Android project
+        run: npx cap add android
+
+      - name: Location permissions
+        run: |
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i 's#<uses-permission android:name="android.permission.INTERNET" />#<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-feature android:name="android.hardware.location.gps" android:required="false" />#' "$M"
+          grep -n "permission\|uses-feature" "$M"
+
+      - name: App icon and splash
+        run: npm run icons
+
+      - name: Sync
+        run: npx cap sync android
+
+      - name: Build APK
+        working-directory: mobile/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          mkdir -p ../dist
+          cp app/build/outputs/apk/debug/app-debug.apk ../dist/CuLaoGieng.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CuLaoGieng-apk
+          path: mobile/dist/CuLaoGieng.apk
+
+      - name: Publish to "apk-latest" release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-latest
+          name: "Cù Lao Giêng — APK mới nhất"
+          body: "Bản build tự động từ commit ${{ github.sha }}. Tải CuLaoGieng.apk, mở trên điện thoại Android và cho phép cài từ nguồn này."
+          prerelease: false
+          make_latest: true
+          files: mobile/dist/CuLaoGieng.apk

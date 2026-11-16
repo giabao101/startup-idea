@@ -21,6 +21,8 @@ const ICON_PATHS = {
   cart: '<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h11.5l2-8H6.2"/>',
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
   x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  back: '<path d="M15 18l-6-6 6-6"/>',
+  chevron: '<path d="M9 6l6 6-6 6"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   minus: '<path d="M5 12h14"/>',
   send: '<path d="M4 12 20 4l-6 16-3-7-7-1z"/>',

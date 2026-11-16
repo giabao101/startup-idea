@@ -185,6 +185,13 @@ http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   try {
     if (url.pathname === "/health") return send(res, 200, { ok: true, uptime: Math.round(process.uptime()) });
+    // CORS: the Android app (Capacitor, origin https://localhost) calls the API and content.json cross-origin
+    if (url.pathname.startsWith("/api/") || url.pathname === "/data/content.json") {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      if (req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
+    }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     serveStatic(req, res, url);
   } catch (e) {
