@@ -26,3 +26,7 @@ Toàn bộ dữ liệu ở `public/data/content.json`. Dữ liệu người dân
 3. Nhập `XAI_API_KEY` khi được hỏi.
 
 Lưu ý: gói Free của Render không lưu file lâu dài — đơn hàng/đặt lịch trong `data/` sẽ mất khi redeploy. Cần database (vd. Render Postgres) nếu dùng thật.
+
+### Chống ngủ (keep-alive)
+Gói Free ngủ sau 15 phút không có truy cập. Server tự ping `RENDER_EXTERNAL_URL/health` mỗi 10 phút (đổi bằng `KEEP_ALIVE_MINUTES`, tắt bằng `KEEP_ALIVE=off`). Xem log `[keep-alive]` trong tab **Logs** của Render.
+Dự phòng: thêm monitor HTTP miễn phí (cron-job.org, UptimeRobot) gọi `https://<ten-app>.onrender.com/health` mỗi 5–10 phút.

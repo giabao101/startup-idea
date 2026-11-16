@@ -10,3 +10,6 @@ services:
         sync: false
       - key: GROK_MODEL
         value: grok-4
+      - key: KEEP_ALIVE_MINUTES
+        value: "10"
+    healthCheckPath: /health

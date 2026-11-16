@@ -184,6 +184,7 @@ function serveStatic(req, res, url) {
 http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   try {
+    if (url.pathname === "/health") return send(res, 200, { ok: true, uptime: Math.round(process.uptime()) });
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     serveStatic(req, res, url);
   } catch (e) {
@@ -192,4 +193,25 @@ http.createServer(async (req, res) => {
   }
 }).listen(PORT, () => {
   console.log(`Cù Lao Giêng site: http://localhost:${PORT}  (AI: ${API_KEY ? MODEL : "offline mode — set XAI_API_KEY in .env"})`);
+  startKeepAlive();
 });
+
+// Keep-alive: Render free web services sleep after 15 min without inbound traffic.
+// Ping our own public URL every KEEP_ALIVE_MINUTES (default 10) so it stays awake.
+// Render sets RENDER_EXTERNAL_URL automatically; set KEEP_ALIVE_URL to override, KEEP_ALIVE=off to disable.
+function startKeepAlive() {
+  const base = process.env.KEEP_ALIVE_URL || process.env.RENDER_EXTERNAL_URL;
+  if (!base || process.env.KEEP_ALIVE === "off") return;
+  const minutes = Math.max(1, Number(process.env.KEEP_ALIVE_MINUTES) || 10);
+  const target = base.replace(/\/$/, "") + "/health";
+  const ping = async () => {
+    try {
+      const r = await fetch(target, { headers: { "User-Agent": "keep-alive" } });
+      console.log(`[keep-alive] ${new Date().toISOString()} ${target} -> ${r.status}`);
+    } catch (e) {
+      console.log(`[keep-alive] ${new Date().toISOString()} ${target} failed: ${e.message}`);
+    }
+  };
+  console.log(`[keep-alive] pinging ${target} every ${minutes} min`);
+  setInterval(ping, minutes * 60 * 1000);
+}
