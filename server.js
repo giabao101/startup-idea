@@ -129,6 +129,15 @@ const validPhone = (p) => /^[0-9+ ]{8,15}$/.test(p);
 
 // --- routes ---
 async function api(req, res, url) {
+  // Public browser config. A Maps JavaScript key is visible to every visitor by design;
+  // protect it with HTTP-referrer restrictions in Google Cloud, never with secrecy.
+  if (url.pathname === "/api/config" && req.method === "GET") {
+    return send(res, 200, {
+      mapsKey: process.env.GOOGLE_MAPS_API_KEY || "",
+      mapId: process.env.GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID",
+    });
+  }
+
   if (url.pathname === "/api/chat" && req.method === "POST") {
     const body = await readBody(req);
     const lang = body.lang === "en" ? "en" : "vi";

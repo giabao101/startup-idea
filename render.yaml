@@ -10,6 +10,10 @@ services:
         sync: false
       - key: GROQ_MODEL
         value: openai/gpt-oss-120b
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+      - key: GOOGLE_MAPS_MAP_ID
+        sync: false
       - key: KEEP_ALIVE_MINUTES
         value: "10"
     healthCheckPath: /health

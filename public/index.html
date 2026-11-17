@@ -89,7 +89,34 @@
         <button class="chip" data-cat="stay" type="button"><span data-ico="bed"></span><span data-i18n="cat.stay"></span></button>
       </div>
       <div class="map-wrap">
-        <div id="leaflet" class="tile map-tile"></div>
+        <div class="tile map-tile" id="mapCard">
+          <div id="leaflet" class="map-canvas"></div>
+          <a class="map-btn gm-open" id="gmOpen" href="https://www.google.com/maps" target="_blank" rel="noopener"><span data-ico="external"></span><span data-i18n="map.openGm">Mở Google Maps</span></a>
+          <div class="map-chips-stack">
+            <div class="map-chip" id="aqChip" hidden></div>
+            <div class="map-chip" id="fireChip" hidden><i style="background:#e5484d"></i><span data-i18n="fire.legend"></span></div>
+          </div>
+          <button class="map-btn layers-btn" id="layersBtn" type="button" aria-expanded="false" aria-controls="layersPanel"><span data-ico="layers"></span><span data-i18n="map.layers">Lớp bản đồ</span></button>
+          <div class="layers-panel" id="layersPanel" hidden>
+            <p class="lp-h" data-i18n="map.type">Loại bản đồ</p>
+            <div class="lp-base">
+              <button type="button" data-base="roadmap" class="on"><span class="thumb t-road"></span><span data-i18n="map.road">Mặc định</span></button>
+              <button type="button" data-base="satellite"><span class="thumb t-sat"></span><span data-i18n="map.sat">Vệ tinh</span></button>
+              <button type="button" data-base="terrain"><span class="thumb t-ter"></span><span data-i18n="map.ter">Địa hình</span></button>
+            </div>
+            <p class="lp-h" data-i18n="map.details">Chi tiết bản đồ</p>
+            <div class="lp-grid">
+              <button type="button" data-layer="transit"><span data-ico="bus"></span><span data-i18n="layer.transit"></span></button>
+              <button type="button" data-layer="traffic"><span data-ico="car"></span><span data-i18n="layer.traffic"></span></button>
+              <button type="button" data-layer="bicycling"><span data-ico="bike"></span><span data-i18n="layer.bicycling"></span></button>
+              <button type="button" data-layer="buildings"><span data-ico="building"></span><span data-i18n="layer.buildings"></span></button>
+              <button type="button" data-layer="streetview"><span data-ico="person"></span><span data-i18n="layer.streetview"></span></button>
+              <button type="button" data-layer="fire"><span data-ico="flame"></span><span data-i18n="layer.fire"></span></button>
+              <button type="button" data-layer="aq"><span data-ico="wind"></span><span data-i18n="layer.aq"></span></button>
+            </div>
+            <p class="lp-note small muted" id="lpNote"></p>
+          </div>
+        </div>
         <aside class="tile nearby">
           <h2 data-i18n="map.nearby">Gần bạn</h2>
           <p class="muted small" id="gpsStatus"></p>
@@ -193,6 +220,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/icons.js"></script>
+  <script src="js/mapview.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>

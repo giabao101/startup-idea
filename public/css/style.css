@@ -256,7 +256,55 @@ a { color: inherit; }
 
 /* ---------- Map ---------- */
 .map-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 1rem; }
-.map-tile { padding: 0; overflow: hidden; height: min(62vh, 560px); min-height: 340px; }
+.map-tile { position: relative; padding: 0; overflow: hidden; height: min(62vh, 560px); min-height: 340px; }
+.map-canvas { position: absolute; inset: 0; }
+/* Floating map controls, Google-Maps style */
+.map-btn { position: absolute; z-index: 1050; display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px;
+  border: 1px solid rgba(15,34,51,.08); border-radius: 10px; background: #fff; color: var(--ink); font: inherit; font-size: .86rem; font-weight: 600;
+  text-decoration: none; cursor: pointer; box-shadow: 0 2px 8px -2px rgba(15,34,51,.3); transition: background-color .15s var(--ease), transform .15s var(--ease); }
+.map-btn:hover { background: #f1f7fc; }
+.map-btn:active { transform: scale(.97); }
+.map-btn .ico { width: 18px; height: 18px; }
+.gm-open { top: 12px; right: 12px; }
+.layers-btn { left: 12px; bottom: 16px; }
+.map-chips-stack { position: absolute; z-index: 1050; top: 12px; left: 12px; right: 190px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; pointer-events: none; }
+.map-chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; max-width: 100%; padding: 8px 12px; border-radius: 10px; background: #fff;
+  font-size: .82rem; box-shadow: 0 2px 8px -2px rgba(15,34,51,.3); pointer-events: auto; }
+.map-chip[hidden] { display: none; }
+.map-chip i { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.map-chip b { font-variant-numeric: tabular-nums; }
+.layers-panel { position: absolute; z-index: 1100; left: 12px; bottom: 64px; width: min(340px, calc(100% - 24px)); max-height: calc(100% - 80px); overflow: auto;
+  padding: 14px; border-radius: 14px; background: #fff; box-shadow: 0 12px 32px -12px rgba(15,34,51,.45); animation: lpIn .2s var(--ease); }
+.layers-panel[hidden] { display: none; }
+@keyframes lpIn { from { opacity: 0; transform: translateY(6px); } }
+.lp-h { font-size: .8rem; font-weight: 600; color: var(--ink-2); margin: 0 0 8px; }
+.lp-h + .lp-base { margin-bottom: 14px; }
+.lp-base { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.lp-base button, .lp-grid button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0; border: 0; background: none;
+  font: inherit; font-size: .76rem; color: var(--ink); cursor: pointer; text-align: center; line-height: 1.25; }
+.thumb { width: 100%; aspect-ratio: 1.4; border-radius: 10px; border: 2px solid transparent; transition: border-color .15s var(--ease); }
+.lp-base button.on .thumb { border-color: var(--accent); }
+.lp-base button.on { color: var(--accent); font-weight: 600; }
+.t-road { background: linear-gradient(135deg, transparent 46%, #f6cf65 46% 54%, transparent 54%), linear-gradient(45deg, transparent 47%, #fff 47% 53%, transparent 53%), #e8eef1; }
+.t-sat { background: radial-gradient(circle at 30% 40%, #4a6b3a 0 20%, transparent 21%), radial-gradient(circle at 70% 70%, #2f4f2a 0 22%, transparent 23%), linear-gradient(160deg, #5d7f4b, #31503a 55%, #2b5a72 56%); }
+.t-ter { background: radial-gradient(circle at 35% 45%, transparent 18%, rgba(110,130,90,.35) 19% 21%, transparent 22% 30%, rgba(110,130,90,.35) 31% 33%, transparent 34%), #dfe8d2; }
+.lp-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 8px; }
+.lp-grid button [data-ico], .lp-grid button > span:first-child { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: #eef4f8; color: var(--ink-2); border: 2px solid transparent; transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease); }
+.lp-grid button:hover > span:first-child { background: #e2edf5; }
+.lp-grid button.on > span:first-child { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.lp-grid button.on { color: var(--accent); font-weight: 600; }
+.lp-grid button.ext > span:first-child { position: relative; }
+.lp-grid button.ext > span:first-child::after { content: ""; position: absolute; right: 3px; top: 3px; width: 8px; height: 8px; border-top: 2px solid var(--ink-2); border-right: 2px solid var(--ink-2); }
+.lp-grid button:disabled { opacity: .5; }
+.lp-note { margin-top: 12px; }
+.lp-note:empty { display: none; }
+.pop { display: flex; flex-direction: column; gap: 4px; max-width: 260px; font-family: "Be Vietnam Pro", system-ui, sans-serif; color: var(--ink); }
+.pop b { font-size: .95rem; }
+.pop .muted { font-size: .82rem; }
+.pop-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.pop-actions .btn { margin: 0; }
+.gm-style .gm-style-iw-c { border-radius: 14px; padding: 12px !important; }
 .nearby { max-height: min(62vh, 560px); overflow: auto; }
 .nearby h2 { margin-bottom: .2rem; }
 .nearby .near-list { margin-top: .6rem; }
@@ -267,7 +315,7 @@ a { color: inherit; }
 .leaflet-container { font: inherit; background: #cfe6f4; }
 .leaflet-popup-content-wrapper { border-radius: 16px; background: rgba(255,255,255,.94); backdrop-filter: blur(10px); box-shadow: 0 16px 30px -14px rgba(0,0,0,.45); }
 .leaflet-popup-content { margin: 12px 14px; font-size: .9rem; }
-.leaflet-popup-content .btn { margin-top: .5rem; }
+.leaflet-popup-content .btn { margin-top: 0; }
 .leaflet-popup-tip { background: rgba(255,255,255,.94); }
 
 /* ---------- Guide ---------- */
@@ -365,7 +413,10 @@ textarea { resize: vertical; }
   .tile-plan, .tile-season, .tile-near { grid-column: span 12; grid-row: auto; }
   .map-wrap, .guide-wrap { grid-template-columns: minmax(0, 1fr); }
   .nearby { max-height: none; }
-  .map-tile { height: 52vh; }
+  .map-tile { height: 60vh; min-height: 420px; }
+  .gm-open .lbl-hide, .gm-open span:last-child { display: none; }
+  .gm-open { padding: 0 11px; }
+  .map-chips-stack { right: 64px; }
   .chat { height: 62dvh; }
   .story-panel { max-height: none; }
   /* dock: icons only, active one shows its label */

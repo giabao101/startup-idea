@@ -4,11 +4,10 @@
   // ---------- State ----------
   let lang = localStorage.getItem("lang") || "vi";
   let DATA = null;
-  let map, layer, meMarker;
+  let mapView = null, mapLoading = null, mapCfg = null;
   let userPos = null;
   let currentCat = "all";
   let currentView = "home";
-  const markers = {};
   let cart = JSON.parse(localStorage.getItem("cart") || "[]");
   const chatHistory = [];
   const VIEWS = ["home", "map", "guide", "food", "experience", "stay", "shop"];
@@ -47,10 +46,7 @@
     if (location.hash !== "#" + view) history.replaceState(null, "", "#" + view);
     moveIndicator();
     if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
-    if (view === "map" && DATA) {
-      if (!map) initMap();
-      setTimeout(() => map.invalidateSize(), 60);
-    }
+    if (view === "map" && DATA) initMap().then(() => setTimeout(() => mapView && mapView.resize(), 60));
   }
 
   function moveIndicator() {
@@ -85,28 +81,130 @@
       .sort((a, b) => a.d - b.d);
   };
 
-  const LF = window.L;
-  function initMap() {
+  // ---------- Map (Google Maps when a key is configured, Leaflet otherwise) ----------
+  const GM = () => window.MapView.GM;
+  const mapState = { base: "roadmap", on: new Set() };
+
+  function popupHtml(p) {
+    const sv = mapView && mapView.kind === "google"
+      ? `<button class="btn ghost small" type="button" data-sv="${p.lat},${p.lng}">${icon("person")}${t("layer.streetview")}</button>`
+      : `<a class="btn ghost small" target="_blank" rel="noopener" href="${GM().pano(p.lat, p.lng)}">${icon("person")}${t("layer.streetview")}</a>`;
+    return `<div class="pop"><b>${esc(p.title)}</b><span class="muted">${esc(p.sub)}</span>
+      <div class="pop-actions">
+        <button class="btn primary small" data-open="${p.kind}:${p.id}" type="button">${t("btn.detail")}</button>
+        <a class="btn ghost small" target="_blank" rel="noopener" href="${GM().dir(p.lat, p.lng)}">${icon("compass")}${t("btn.directions")}</a>
+        ${sv}
+        <a class="btn ghost small" target="_blank" rel="noopener" href="${GM().place(p.lat, p.lng)}">${icon("external")}Google Maps</a>
+      </div></div>`;
+  }
+
+  async function buildMap(key) {
     const c = DATA.center;
-    map = LF.map("leaflet", { zoomControl: true, scrollWheelZoom: false }).setView([c.lat, c.lng], c.zoom);
-    LF.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(map);
-    layer = LF.layerGroup().addTo(map);
+    $("#leaflet").innerHTML = "";
+    mapView = await window.MapView.create({
+      el: $("#leaflet"), key, mapId: mapCfg.mapId, lang: lang === "vi" ? "vi" : "en",
+      center: { lat: c.lat, lng: c.lng }, zoom: c.zoom, t, popupHtml,
+      onLayerChange: (name, on) => { on ? mapState.on.add(name) : mapState.on.delete(name); syncLayerButtons(); },
+    });
+    $("#mapCard").dataset.engine = mapView.kind;
+    mapState.on.clear(); mapState.base = "roadmap";
+    syncLayerButtons();
     renderMarkers();
-    if (userPos) placeMe();
+    if (userPos) mapView.setUser(userPos);
+  }
+
+  function initMap() {
+    if (mapLoading) return mapLoading;
+    mapLoading = (async () => {
+      try { mapCfg = await fetch(API + "/api/config").then((r) => r.json()); } catch { mapCfg = { mapsKey: "", mapId: "DEMO_MAP_ID" }; }
+      await buildMap(mapCfg.mapsKey);
+      // A rejected key (referrer not allowed, API not enabled) is reported after load: rebuild without Google.
+      document.addEventListener("gm-auth-failed", () => { toast(t("map.keyErr")); buildMap(""); }, { once: true });
+    })();
+    return mapLoading;
   }
 
   function renderMarkers() {
-    if (!map) return;
-    layer.clearLayers();
-    allPoints()
+    if (!mapView) return;
+    mapView.setPoints(allPoints()
       .filter((p) => currentCat === "all" || p.cat === currentCat)
-      .forEach((p) => {
-        const html = `<div class="pin" style="--c:${CAT_COLOR[p.cat]}">${icon(ICON_FOR[p.id] || CAT_ICON[p.cat])}</div>`;
-        const m = LF.marker([p.lat, p.lng], { icon: LF.divIcon({ className: "", html, iconSize: [34, 34], iconAnchor: [17, 34], popupAnchor: [0, -30] }) }).addTo(layer);
-        m.bindPopup(`<b>${esc(p.title)}</b><br><span class="muted">${esc(p.sub)}</span><br>
-          <button class="btn primary small" data-open="${p.kind}:${p.id}" type="button">${t("btn.detail")}</button>`);
-        markers[`${p.kind}:${p.id}`] = m;
-      });
+      .map((p) => ({ ...p, key: `${p.kind}:${p.id}`, pinHtml: `<div class="pin" style="--c:${CAT_COLOR[p.cat]}">${icon(ICON_FOR[p.id] || CAT_ICON[p.cat])}</div>` })));
+  }
+
+  function syncLayerButtons() {
+    $$("[data-base]").forEach((b) => b.classList.toggle("on", b.dataset.base === mapState.base));
+    $$("[data-layer]").forEach((b) => {
+      const name = b.dataset.layer;
+      b.classList.toggle("on", mapState.on.has(name));
+      const ext = mapView && !mapView.supports(name);
+      b.classList.toggle("ext", !!ext);
+      b.title = ext ? t("map.opensGm") : "";
+    });
+    $("#lpNote").textContent = mapView && mapView.kind === "leaflet" ? t("map.noKey") : "";
+    $("#fireChip").hidden = !mapState.on.has("fire");
+    if (!mapState.on.has("aq")) $("#aqChip").hidden = true;
+  }
+
+  function gmViewUrl() {
+    const v = mapView ? mapView.getView() : { ...DATA.center, base: "roadmap" };
+    const layer = ["traffic", "transit", "bicycling"].find((l) => mapState.on.has(l)) || "";
+    return GM().view(v, mapState.base, layer);
+  }
+
+  const AQ_BANDS = [[50, "aq.good", "#16a34a"], [100, "aq.moderate", "#ca8a04"], [150, "aq.sensitive", "#ea580c"], [200, "aq.unhealthy", "#dc2626"], [300, "aq.veryUnhealthy", "#7e22ce"], [1e9, "aq.hazardous", "#7f1d1d"]];
+  async function showAirQuality() {
+    const chip = $("#aqChip");
+    chip.hidden = false;
+    chip.textContent = t("aq.loading");
+    try {
+      const v = mapView.getView();
+      const q = await window.MapView.airQuality(v.lat.toFixed(4), v.lng.toFixed(4));
+      const [, k, col] = AQ_BANDS.find(([max]) => q.aqi <= max);
+      chip.innerHTML = `<i style="background:${col}"></i><b>AQI ${q.aqi}</b><span>${t(k)}</span><span class="muted">PM2.5 ${q.pm25.toLocaleString(lang === "vi" ? "vi-VN" : "en-US")} µg/m³</span>`;
+    } catch { chip.textContent = t("aq.err"); }
+  }
+
+  async function toggleLayer(name, btn) {
+    const on = !mapState.on.has(name);
+    if (!mapView.supports(name)) {
+      // Only Google has this layer: open the same view in Google Maps.
+      const v = mapView.getView();
+      const url = name === "streetview" ? GM().pano(v.lat, v.lng)
+        : name === "buildings" ? GM().view({ ...v, zoom: Math.max(v.zoom, 17) }, "satellite")
+        : GM().view(v, mapState.base, window.MapView.GM_LAYER[name]);
+      window.open(url, "_blank", "noopener");
+      return;
+    }
+    btn.disabled = true;
+    const ok = await mapView.toggle(name, on);
+    btn.disabled = false;
+    if (!ok) { if (name === "streetview") toast(t("map.noPano")); return; }
+    on ? mapState.on.add(name) : mapState.on.delete(name);
+    if (name === "aq" && on) showAirQuality();
+    syncLayerButtons();
+  }
+
+  function placeMe() { if (mapView) mapView.setUser(userPos); }
+
+  function locate(btn) {
+    if (!navigator.geolocation) return toast(t("map.gpsErr"));
+    btn && (btn.disabled = true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        btn && (btn.disabled = false);
+        userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        placeMe();
+        renderNearby();
+      },
+      () => { btn && (btn.disabled = false); toast(t("map.gpsErr")); },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  function focusPoint(key) {
+    route("map", { scroll: false });
+    $("#mapCard").scrollIntoView({ behavior: "smooth", block: "center" });
+    initMap().then(() => setTimeout(() => mapView && mapView.focus(key), 150));
   }
 
   function nearItem(p) {
@@ -120,39 +218,6 @@
     $("#nearbyList").innerHTML = sortedByDistance(currentCat).map(nearItem).join("");
     $("#homeNear").innerHTML = sortedByDistance().slice(0, 4).map(nearItem).join("");
     $("#gpsStatus").textContent = userPos ? t("map.gpsOn") : t("map.gpsOff");
-  }
-
-  function placeMe() {
-    const me = LF.divIcon({ className: "", html: '<div class="me-pin"></div>', iconSize: [18, 18] });
-    if (meMarker) meMarker.setLatLng([userPos.lat, userPos.lng]);
-    else meMarker = LF.marker([userPos.lat, userPos.lng], { icon: me }).addTo(map);
-    meMarker.bindPopup(t("map.you"));
-  }
-
-  function locate(btn) {
-    if (!navigator.geolocation) return toast(t("map.gpsErr"));
-    btn && (btn.disabled = true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        btn && (btn.disabled = false);
-        userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        if (map) { placeMe(); map.setView([userPos.lat, userPos.lng], 14); }
-        renderNearby();
-      },
-      () => { btn && (btn.disabled = false); toast(t("map.gpsErr")); },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
-  }
-
-  function focusPoint(key) {
-    route("map", { scroll: false });
-    $("#leaflet").scrollIntoView({ behavior: "smooth", block: "center" });
-    setTimeout(() => {
-      const m = markers[key];
-      if (!m) return;
-      map.setView(m.getLatLng(), 16);
-      m.openPopup();
-    }, 120);
   }
 
   // ---------- Modal ----------
@@ -438,9 +503,12 @@
 
   // ---------- Events ----------
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("[data-open],[data-focus],[data-book],[data-add],[data-inc],[data-dec],[data-story],[data-askai],[data-q],[data-cat],[data-go]");
+    const el = e.target.closest("[data-base],[data-layer],[data-sv],[data-open],[data-focus],[data-book],[data-add],[data-inc],[data-dec],[data-story],[data-askai],[data-q],[data-cat],[data-go]");
     if (!el) return;
     const d = el.dataset;
+    if (d.base) { if (mapView) { mapView.setBase(d.base); mapState.base = d.base; syncLayerButtons(); } return; }
+    if (d.layer) { if (mapView) toggleLayer(d.layer, el); return; }
+    if (d.sv) { const [la, ln] = d.sv.split(",").map(Number); mapView.streetViewAt(la, ln).then((ok) => { if (!ok) { toast(t("map.noPano")); window.open(GM().pano(la, ln), "_blank", "noopener"); } }); return; }
     if (d.open) openDetail(d.open);
     else if (d.focus) focusPoint(d.focus);
     else if (d.book) openDetail(d.book);
@@ -467,6 +535,13 @@
   $("#chatForm").addEventListener("submit", (e) => { e.preventDefault(); const v = $("#chatInput").value; $("#chatInput").value = ""; ask(v); });
   $("#promptPill").addEventListener("click", () => { route("guide"); setTimeout(() => $("#chatInput").focus(), 300); });
   $("#locateBtn").addEventListener("click", (e) => locate(e.currentTarget));
+  $("#layersBtn").addEventListener("click", (e) => {
+    const p = $("#layersPanel"), open = p.hidden;
+    p.hidden = !open;
+    e.currentTarget.setAttribute("aria-expanded", String(open));
+  });
+  // Keep the "Open in Google Maps" link pointing at the current view, layer and basemap.
+  ["pointerdown", "focus"].forEach((ev) => $("#gmOpen").addEventListener(ev, (e) => { e.currentTarget.href = gmViewUrl(); }));
   $("#homeLocate").addEventListener("click", (e) => locate(e.currentTarget));
   $("#langBtn").addEventListener("click", () => { lang = lang === "vi" ? "en" : "vi"; localStorage.setItem("lang", lang); applyLang(); });
   $("#modalClose").addEventListener("click", closeModal);
