@@ -98,8 +98,8 @@ function offlineAnswer(q, lang) {
     return CONTENT.homestays.map((h) => `• ${h.name}: ${h.price} — ${L(h.desc)}`).join("\n");
   if (/lịch trình|itinerar|1 ngày|one.day|plan/.test(s))
     return lang === "en"
-      ? "• 7:00 Village market breakfast\n• 8:30 Cu Lao Gieng Church & Franciscan Monastery\n• 10:30 Mango orchard tour\n• 12:00 Lunch: fish hotpot, mango salad\n• 14:00 Rice cracker workshop\n• 16:30 Boat trip & sunset on the Tien River"
-      : "• 7:00 Ăn sáng chợ quê\n• 8:30 Nhà thờ Cù Lao Giêng & Tu viện Phanxicô\n• 10:30 Tham quan vườn xoài\n• 12:00 Ăn trưa: lẩu mắm, gỏi xoài\n• 14:00 Học làm bánh phồng\n• 16:30 Đi xuồng ngắm hoàng hôn sông Tiền";
+      ? "• 7:00 Breakfast at Tan My market\n• 8:30 Cu Lao Gieng Church & Franciscan Monastery\n• 10:30 Mango orchard tour\n• 12:00 Lunch: fish hotpot, mango salad\n• 14:00 Rice cracker workshop\n• 16:30 Boat trip & sunset on the Tien River"
+      : "• 7:00 Ăn sáng chợ Tấn Mỹ\n• 8:30 Nhà thờ Cù Lao Giêng & Tu viện Phanxicô\n• 10:30 Tham quan vườn xoài\n• 12:00 Ăn trưa: lẩu mắm, gỏi xoài\n• 14:00 Học làm bánh phồng\n• 16:30 Đi xuồng ngắm hoàng hôn sông Tiền";
   return lang === "en"
     ? "I can tell you about the church, monasteries, mango orchards, local food, homestays or a one-day itinerary. What would you like to know?"
     : "Tôi có thể giới thiệu nhà thờ, tu viện, vườn xoài, món ăn, homestay hoặc lịch trình 1 ngày. Bạn muốn biết gì?";

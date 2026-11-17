@@ -1,13 +1,21 @@
 {
-  "_note": "Dữ liệu mẫu (demo). Tọa độ là gần đúng, số điện thoại/giá là ví dụ — cần thay bằng thông tin thật của người dân trước khi đưa vào sử dụng.",
-  "center": { "lat": 10.505, "lng": 105.475, "zoom": 13 },
+  "_note": "Tọa độ nhà thờ, Tu viện Phanxicô, Tu viện Chúa Quan Phòng, Chợ Tấn Mỹ và bến đò lấy từ OpenStreetMap. Vườn, quán ăn, homestay là dữ liệu mẫu (demo), đặt ở vị trí gần đúng trên cù lao; số điện thoại/giá là ví dụ.",
+  "center": {
+    "lat": 10.497,
+    "lng": 105.508,
+    "zoom": 14
+  },
   "places": [
     {
       "id": "nha-tho",
       "cat": "history",
       "icon": "⛪",
-      "lat": 10.5112, "lng": 105.4705,
-      "name": { "vi": "Nhà thờ Cù Lao Giêng", "en": "Cu Lao Gieng Church" },
+      "lat": 10.50732,
+      "lng": 105.4979,
+      "name": {
+        "vi": "Nhà thờ Cù Lao Giêng",
+        "en": "Cu Lao Gieng Church"
+      },
       "short": {
         "vi": "Thánh đường cổ kiến trúc Gothic, xây cuối thế kỷ 19, thuộc Giáo phận Long Xuyên.",
         "en": "A Gothic-style church built in the late 19th century, part of the Long Xuyen Diocese."
@@ -20,14 +28,21 @@
         "vi": "Kiến trúc Gothic: mái nhọn, tháp chuông cao, cửa vòm nhọn, kính màu. Mặt tiền đối xứng, tường dày giúp mát quanh năm.",
         "en": "Gothic architecture: pointed roofs, a tall bell tower, pointed arches and stained glass. Symmetrical façade and thick walls keep it cool all year."
       },
-      "tips": { "vi": "Ăn mặc lịch sự, giữ yên lặng khi có thánh lễ.", "en": "Dress modestly and keep quiet during Mass." }
+      "tips": {
+        "vi": "Ăn mặc lịch sự, giữ yên lặng khi có thánh lễ.",
+        "en": "Dress modestly and keep quiet during Mass."
+      }
     },
     {
       "id": "tu-vien-phanxico",
       "cat": "history",
       "icon": "🏛️",
-      "lat": 10.5085, "lng": 105.4742,
-      "name": { "vi": "Tu viện Phanxicô", "en": "Franciscan Monastery" },
+      "lat": 10.50491,
+      "lng": 105.5004,
+      "name": {
+        "vi": "Tu viện Phanxicô",
+        "en": "Franciscan Monastery"
+      },
       "short": {
         "vi": "Tu viện cổ kính mang phong cách kiến trúc Pháp, một trong những tu viện lâu đời ở miền Tây.",
         "en": "A historic French-style monastery, one of the oldest in the Mekong Delta."
@@ -40,14 +55,21 @@
         "vi": "Hành lang dài với dãy cột và vòm cuốn, tường vàng nhạt, cửa sổ chớp gỗ — đặc trưng kiến trúc thuộc địa Pháp.",
         "en": "Long arcaded corridors, pale-yellow walls and wooden shutters — classic French colonial style."
       },
-      "tips": { "vi": "Một số khu vực cần xin phép trước khi vào.", "en": "Some areas require permission before entering." }
+      "tips": {
+        "vi": "Một số khu vực cần xin phép trước khi vào.",
+        "en": "Some areas require permission before entering."
+      }
     },
     {
       "id": "quan-phong",
       "cat": "history",
       "icon": "🏫",
-      "lat": 10.5118, "lng": 105.4718,
-      "name": { "vi": "Tu viện Dòng Chúa Quan Phòng", "en": "Providence Sisters Convent" },
+      "lat": 10.50455,
+      "lng": 105.50146,
+      "name": {
+        "vi": "Tu viện Dòng Chúa Quan Phòng",
+        "en": "Providence Sisters Convent"
+      },
       "short": {
         "vi": "Nằm cạnh nhà thờ, từng là trường học và cô nhi viện nổi tiếng của vùng.",
         "en": "Next to the church; once a renowned school and orphanage."
@@ -60,14 +82,21 @@
         "vi": "Khối nhà hai tầng hình chữ U, hành lang rộng, mái ngói đỏ.",
         "en": "A two-storey U-shaped building with wide verandas and red-tiled roofs."
       },
-      "tips": { "vi": "Cần xin phép trước khi tham quan.", "en": "Ask for permission before visiting." }
+      "tips": {
+        "vi": "Cần xin phép trước khi tham quan.",
+        "en": "Ask for permission before visiting."
+      }
     },
     {
       "id": "ben-do",
       "cat": "scenic",
       "icon": "⛴️",
-      "lat": 10.5155, "lng": 105.4650,
-      "name": { "vi": "Bến đò & bờ sông Tiền", "en": "Ferry pier & Tien River bank" },
+      "lat": 10.52584,
+      "lng": 105.49089,
+      "name": {
+        "vi": "Bến đò mũi cù lao",
+        "en": "Ferry landing at the island tip"
+      },
       "short": {
         "vi": "Ngắm hoàng hôn trên sông Tiền, nhìn ghe xuồng qua lại.",
         "en": "Watch sunset over the Tien River and boats passing by."
@@ -76,15 +105,25 @@
         "vi": "Trước khi có cầu, đò ngang là đường duy nhất nối cù lao với đất liền. Đến nay chuyến đò vẫn là một phần ký ức và đời sống người dân.",
         "en": "Before bridges, ferries were the only link between the island and the mainland — and they are still part of daily life."
       },
-      "arch": { "vi": "Cảnh quan sông nước miền Tây.", "en": "Classic Mekong riverscape." },
-      "tips": { "vi": "Đẹp nhất lúc 17h–18h.", "en": "Best at 5–6 pm." }
+      "arch": {
+        "vi": "Cảnh quan sông nước miền Tây.",
+        "en": "Classic Mekong riverscape."
+      },
+      "tips": {
+        "vi": "Đẹp nhất lúc 17h–18h.",
+        "en": "Best at 5–6 pm."
+      }
     },
     {
       "id": "vuon-xoai-my-hiep",
       "cat": "garden",
       "icon": "🥭",
-      "lat": 10.4990, "lng": 105.4880,
-      "name": { "vi": "Vùng vườn xoài Mỹ Hiệp", "en": "My Hiep mango orchards" },
+      "lat": 10.4885,
+      "lng": 105.5235,
+      "name": {
+        "vi": "Vùng vườn xoài Mỹ Hiệp",
+        "en": "My Hiep mango orchards"
+      },
       "short": {
         "vi": "Những vườn xoài, nhãn, chuối trải dài trên cù lao — mùa xoài chín khoảng tháng 3–5.",
         "en": "Orchards of mango, longan and banana across the island — mango season roughly March–May."
@@ -93,15 +132,25 @@
         "vi": "Đất phù sa bồi đắp giữa hai nhánh sông giúp cây trái ở cù lao ngọt và thơm. Nhiều gia đình đã trồng xoài qua nhiều thế hệ.",
         "en": "Alluvial soil between river branches makes the island's fruit sweet and fragrant. Many families have grown mango for generations."
       },
-      "arch": { "vi": "Nhà vườn Nam Bộ, mương liếp, cầu khỉ.", "en": "Southern garden houses, canal-bed orchards, monkey bridges." },
-      "tips": { "vi": "Liên hệ chủ vườn trước qua mục Trải nghiệm.", "en": "Contact the owner first via the Experiences section." }
+      "arch": {
+        "vi": "Nhà vườn Nam Bộ, mương liếp, cầu khỉ.",
+        "en": "Southern garden houses, canal-bed orchards, monkey bridges."
+      },
+      "tips": {
+        "vi": "Liên hệ chủ vườn trước qua mục Trải nghiệm.",
+        "en": "Contact the owner first via the Experiences section."
+      }
     },
     {
       "id": "cho-que",
       "cat": "scenic",
       "icon": "🧺",
-      "lat": 10.5040, "lng": 105.4800,
-      "name": { "vi": "Chợ quê Cù Lao Giêng", "en": "Cu Lao Gieng village market" },
+      "lat": 10.50104,
+      "lng": 105.50206,
+      "name": {
+        "vi": "Chợ Tấn Mỹ",
+        "en": "Tan My market"
+      },
       "short": {
         "vi": "Chợ sáng với cá đồng, rau quê, bánh dân gian.",
         "en": "Morning market with river fish, local greens and folk cakes."
@@ -110,122 +159,417 @@
         "vi": "Chợ họp từ sáng sớm, là nơi người dân trao đổi nông sản và gặp gỡ nhau.",
         "en": "Opens at dawn — where islanders trade produce and catch up."
       },
-      "arch": { "vi": "Chợ nông thôn Nam Bộ.", "en": "Southern rural market." },
-      "tips": { "vi": "Đi trước 8h sáng.", "en": "Go before 8 am." }
+      "arch": {
+        "vi": "Chợ nông thôn Nam Bộ.",
+        "en": "Southern rural market."
+      },
+      "tips": {
+        "vi": "Đi trước 8h sáng.",
+        "en": "Go before 8 am."
+      }
     }
   ],
   "foods": [
     {
-      "id": "goi-xoai", "icon": "🥗",
-      "name": { "vi": "Gỏi xoài khô cá lóc", "en": "Green mango salad with dried snakehead fish" },
-      "ingredients": { "vi": "Xoài xanh, khô cá lóc, rau răm, đậu phộng, nước mắm chua ngọt", "en": "Green mango, dried snakehead fish, Vietnamese coriander, peanuts, sweet-sour fish sauce" },
-      "desc": { "vi": "Chua, giòn, mặn ngọt hài hòa — món nhậu và món ăn chơi đặc trưng vùng xoài.", "en": "Sour, crunchy, sweet and salty — a signature snack of mango country." },
+      "id": "goi-xoai",
+      "icon": "🥗",
+      "name": {
+        "vi": "Gỏi xoài khô cá lóc",
+        "en": "Green mango salad with dried snakehead fish"
+      },
+      "ingredients": {
+        "vi": "Xoài xanh, khô cá lóc, rau răm, đậu phộng, nước mắm chua ngọt",
+        "en": "Green mango, dried snakehead fish, Vietnamese coriander, peanuts, sweet-sour fish sauce"
+      },
+      "desc": {
+        "vi": "Chua, giòn, mặn ngọt hài hòa — món nhậu và món ăn chơi đặc trưng vùng xoài.",
+        "en": "Sour, crunchy, sweet and salty — a signature snack of mango country."
+      },
       "price": "40.000–70.000đ"
     },
     {
-      "id": "banh-xeo", "icon": "🥞",
-      "name": { "vi": "Bánh xèo bông điên điển", "en": "Sizzling pancake with sesbania flowers" },
-      "ingredients": { "vi": "Bột gạo, nghệ, nước cốt dừa, tôm, thịt, bông điên điển, rau rừng", "en": "Rice flour, turmeric, coconut milk, shrimp, pork, sesbania flowers, wild herbs" },
-      "desc": { "vi": "Bông điên điển vàng rực mùa nước nổi (tháng 8–11).", "en": "Golden sesbania flowers bloom in flood season (Aug–Nov)." },
+      "id": "banh-xeo",
+      "icon": "🥞",
+      "name": {
+        "vi": "Bánh xèo bông điên điển",
+        "en": "Sizzling pancake with sesbania flowers"
+      },
+      "ingredients": {
+        "vi": "Bột gạo, nghệ, nước cốt dừa, tôm, thịt, bông điên điển, rau rừng",
+        "en": "Rice flour, turmeric, coconut milk, shrimp, pork, sesbania flowers, wild herbs"
+      },
+      "desc": {
+        "vi": "Bông điên điển vàng rực mùa nước nổi (tháng 8–11).",
+        "en": "Golden sesbania flowers bloom in flood season (Aug–Nov)."
+      },
       "price": "20.000–40.000đ/cái"
     },
     {
-      "id": "lau-mam", "icon": "🍲",
-      "name": { "vi": "Lẩu mắm", "en": "Fermented fish hotpot" },
-      "ingredients": { "vi": "Mắm cá linh/cá sặc, cá, tôm, thịt ba chỉ, cà tím, hơn 10 loại rau", "en": "Fermented fish paste, fish, shrimp, pork belly, eggplant, 10+ kinds of greens" },
-      "desc": { "vi": "Đậm đà, thơm mùi mắm — linh hồn ẩm thực An Giang.", "en": "Rich and pungent — the soul of An Giang cuisine." },
+      "id": "lau-mam",
+      "icon": "🍲",
+      "name": {
+        "vi": "Lẩu mắm",
+        "en": "Fermented fish hotpot"
+      },
+      "ingredients": {
+        "vi": "Mắm cá linh/cá sặc, cá, tôm, thịt ba chỉ, cà tím, hơn 10 loại rau",
+        "en": "Fermented fish paste, fish, shrimp, pork belly, eggplant, 10+ kinds of greens"
+      },
+      "desc": {
+        "vi": "Đậm đà, thơm mùi mắm — linh hồn ẩm thực An Giang.",
+        "en": "Rich and pungent — the soul of An Giang cuisine."
+      },
       "price": "200.000–350.000đ/nồi"
     },
     {
-      "id": "ca-linh", "icon": "🐟",
-      "name": { "vi": "Cá linh kho mía / chiên giòn", "en": "Linh fish braised with sugarcane / fried" },
-      "ingredients": { "vi": "Cá linh non, mía, nước mắm, tiêu", "en": "Young linh fish, sugarcane, fish sauce, pepper" },
-      "desc": { "vi": "Đặc sản mùa nước nổi.", "en": "A flood-season specialty." },
+      "id": "ca-linh",
+      "icon": "🐟",
+      "name": {
+        "vi": "Cá linh kho mía / chiên giòn",
+        "en": "Linh fish braised with sugarcane / fried"
+      },
+      "ingredients": {
+        "vi": "Cá linh non, mía, nước mắm, tiêu",
+        "en": "Young linh fish, sugarcane, fish sauce, pepper"
+      },
+      "desc": {
+        "vi": "Đặc sản mùa nước nổi.",
+        "en": "A flood-season specialty."
+      },
       "price": "60.000–100.000đ"
     },
     {
-      "id": "che-xoai", "icon": "🍧",
-      "name": { "vi": "Xoài cát chín & chè xoài", "en": "Ripe mango & mango sweet soup" },
-      "ingredients": { "vi": "Xoài cát Hòa Lộc, nước cốt dừa, bột báng", "en": "Hoa Loc mango, coconut milk, tapioca pearls" },
-      "desc": { "vi": "Ngọt thanh, thơm lừng — nên thử tại vườn.", "en": "Fragrant and sweet — best tasted right at the orchard." },
+      "id": "che-xoai",
+      "icon": "🍧",
+      "name": {
+        "vi": "Xoài cát chín & chè xoài",
+        "en": "Ripe mango & mango sweet soup"
+      },
+      "ingredients": {
+        "vi": "Xoài cát Hòa Lộc, nước cốt dừa, bột báng",
+        "en": "Hoa Loc mango, coconut milk, tapioca pearls"
+      },
+      "desc": {
+        "vi": "Ngọt thanh, thơm lừng — nên thử tại vườn.",
+        "en": "Fragrant and sweet — best tasted right at the orchard."
+      },
       "price": "15.000–30.000đ"
     },
     {
-      "id": "banh-phong", "icon": "🍘",
-      "name": { "vi": "Bánh phồng, bánh tráng quê", "en": "Puffed rice crackers & rice paper" },
-      "ingredients": { "vi": "Gạo nếp, nước cốt dừa, mè", "en": "Glutinous rice, coconut milk, sesame" },
-      "desc": { "vi": "Làm thủ công, có thể xem người dân làm bánh.", "en": "Handmade — you can watch locals make them." },
+      "id": "banh-phong",
+      "icon": "🍘",
+      "name": {
+        "vi": "Bánh phồng, bánh tráng quê",
+        "en": "Puffed rice crackers & rice paper"
+      },
+      "ingredients": {
+        "vi": "Gạo nếp, nước cốt dừa, mè",
+        "en": "Glutinous rice, coconut milk, sesame"
+      },
+      "desc": {
+        "vi": "Làm thủ công, có thể xem người dân làm bánh.",
+        "en": "Handmade — you can watch locals make them."
+      },
       "price": "30.000–50.000đ/xấp"
     }
   ],
   "eateries": [
-    { "id": "e1", "lat": 10.5098, "lng": 105.4722, "name": "Quán Cô Ba (demo)", "dishes": { "vi": "Lẩu mắm, cá linh", "en": "Fish hotpot, linh fish" }, "price": "50.000–300.000đ", "phone": "0900000101", "hours": "9:00–21:00" },
-    { "id": "e2", "lat": 10.5045, "lng": 105.4795, "name": "Bánh xèo Út Hai (demo)", "dishes": { "vi": "Bánh xèo, gỏi cuốn", "en": "Sizzling pancake, spring rolls" }, "price": "20.000–60.000đ", "phone": "0900000102", "hours": "14:00–20:00" },
-    { "id": "e3", "lat": 10.5010, "lng": 105.4860, "name": "Gỏi xoài Bến Cù Lao (demo)", "dishes": { "vi": "Gỏi xoài, chè xoài", "en": "Mango salad, mango dessert" }, "price": "15.000–70.000đ", "phone": "0900000103", "hours": "8:00–19:00" }
+    {
+      "id": "e1",
+      "lat": 10.503,
+      "lng": 105.501,
+      "name": "Quán Cô Ba (demo)",
+      "dishes": {
+        "vi": "Lẩu mắm, cá linh",
+        "en": "Fish hotpot, linh fish"
+      },
+      "price": "50.000–300.000đ",
+      "phone": "0900000101",
+      "hours": "9:00–21:00"
+    },
+    {
+      "id": "e2",
+      "lat": 10.4972,
+      "lng": 105.5068,
+      "name": "Bánh xèo Út Hai (demo)",
+      "dishes": {
+        "vi": "Bánh xèo, gỏi cuốn",
+        "en": "Sizzling pancake, spring rolls"
+      },
+      "price": "20.000–60.000đ",
+      "phone": "0900000102",
+      "hours": "14:00–20:00"
+    },
+    {
+      "id": "e3",
+      "lat": 10.489,
+      "lng": 105.52,
+      "name": "Gỏi xoài Bến Cù Lao (demo)",
+      "dishes": {
+        "vi": "Gỏi xoài, chè xoài",
+        "en": "Mango salad, mango dessert"
+      },
+      "price": "15.000–70.000đ",
+      "phone": "0900000103",
+      "hours": "8:00–19:00"
+    }
   ],
   "experiences": [
     {
-      "id": "x1", "icon": "🥭", "lat": 10.4985, "lng": 105.4892,
-      "host": "Chú Sáu (demo)", "phone": "0900000201", "zalo": "0900000201",
-      "name": { "vi": "Tham quan & hái xoài tại vườn", "en": "Mango orchard tour & picking" },
-      "desc": { "vi": "Dạo vườn xoài, nghe chủ vườn kể chuyện trồng xoài, tự hái và ăn tại chỗ.", "en": "Walk the orchard, hear the farmer's story, pick and eat mangoes on the spot." },
-      "season": { "vi": "Tháng 3–5 (xoài chính vụ), có xoài nghịch vụ", "en": "Mar–May (main season), off-season available" },
+      "id": "x1",
+      "icon": "🥭",
+      "lat": 10.487,
+      "lng": 105.525,
+      "host": "Chú Sáu (demo)",
+      "phone": "0900000201",
+      "zalo": "0900000201",
+      "name": {
+        "vi": "Tham quan & hái xoài tại vườn",
+        "en": "Mango orchard tour & picking"
+      },
+      "desc": {
+        "vi": "Dạo vườn xoài, nghe chủ vườn kể chuyện trồng xoài, tự hái và ăn tại chỗ.",
+        "en": "Walk the orchard, hear the farmer's story, pick and eat mangoes on the spot."
+      },
+      "season": {
+        "vi": "Tháng 3–5 (xoài chính vụ), có xoài nghịch vụ",
+        "en": "Mar–May (main season), off-season available"
+      },
       "price": "50.000đ/người"
     },
     {
-      "id": "x2", "icon": "🍌", "lat": 10.5025, "lng": 105.4830,
-      "host": "Cô Tư (demo)", "phone": "0900000202", "zalo": "0900000202",
-      "name": { "vi": "Vườn trái cây tổng hợp", "en": "Mixed fruit garden" },
-      "desc": { "vi": "Nhãn, chuối, mít, ổi… thưởng thức trái cây theo mùa, đi cầu khỉ, bắt cá mương.", "en": "Longan, banana, jackfruit, guava… seasonal fruit, monkey bridges, catching fish in canals." },
-      "season": { "vi": "Quanh năm", "en": "All year" },
+      "id": "x2",
+      "icon": "🍌",
+      "lat": 10.4945,
+      "lng": 105.5125,
+      "host": "Cô Tư (demo)",
+      "phone": "0900000202",
+      "zalo": "0900000202",
+      "name": {
+        "vi": "Vườn trái cây tổng hợp",
+        "en": "Mixed fruit garden"
+      },
+      "desc": {
+        "vi": "Nhãn, chuối, mít, ổi… thưởng thức trái cây theo mùa, đi cầu khỉ, bắt cá mương.",
+        "en": "Longan, banana, jackfruit, guava… seasonal fruit, monkey bridges, catching fish in canals."
+      },
+      "season": {
+        "vi": "Quanh năm",
+        "en": "All year"
+      },
       "price": "40.000đ/người"
     },
     {
-      "id": "x3", "icon": "🍘", "lat": 10.5060, "lng": 105.4760,
-      "host": "Bà Năm (demo)", "phone": "0900000203", "zalo": "0900000203",
-      "name": { "vi": "Học làm bánh phồng, bánh tráng", "en": "Rice cracker making class" },
-      "desc": { "vi": "Cùng người dân quết bột, cán bánh, phơi bánh.", "en": "Pound dough, roll and sun-dry crackers with locals." },
-      "season": { "vi": "Quanh năm (mùa khô đẹp nhất)", "en": "All year (best in dry season)" },
+      "id": "x3",
+      "icon": "🍘",
+      "lat": 10.499,
+      "lng": 105.506,
+      "host": "Bà Năm (demo)",
+      "phone": "0900000203",
+      "zalo": "0900000203",
+      "name": {
+        "vi": "Học làm bánh phồng, bánh tráng",
+        "en": "Rice cracker making class"
+      },
+      "desc": {
+        "vi": "Cùng người dân quết bột, cán bánh, phơi bánh.",
+        "en": "Pound dough, roll and sun-dry crackers with locals."
+      },
+      "season": {
+        "vi": "Quanh năm (mùa khô đẹp nhất)",
+        "en": "All year (best in dry season)"
+      },
       "price": "80.000đ/người"
     },
     {
-      "id": "x4", "icon": "🚣", "lat": 10.5150, "lng": 105.4660,
-      "host": "Anh Bảy (demo)", "phone": "0900000204", "zalo": "0900000204",
-      "name": { "vi": "Đi xuồng quanh cù lao", "en": "Boat trip around the island" },
-      "desc": { "vi": "Ngồi xuồng ngắm sông Tiền, làng ven sông, hoàng hôn.", "en": "Boat along the Tien River, riverside villages and sunset." },
-      "season": { "vi": "Quanh năm", "en": "All year" },
+      "id": "x4",
+      "icon": "🚣",
+      "lat": 10.5235,
+      "lng": 105.4925,
+      "host": "Anh Bảy (demo)",
+      "phone": "0900000204",
+      "zalo": "0900000204",
+      "name": {
+        "vi": "Đi xuồng quanh cù lao",
+        "en": "Boat trip around the island"
+      },
+      "desc": {
+        "vi": "Ngồi xuồng ngắm sông Tiền, làng ven sông, hoàng hôn.",
+        "en": "Boat along the Tien River, riverside villages and sunset."
+      },
+      "season": {
+        "vi": "Quanh năm",
+        "en": "All year"
+      },
       "price": "150.000đ/chuyến (4 người)"
     }
   ],
   "homestays": [
     {
-      "id": "h1", "lat": 10.5075, "lng": 105.4750, "icon": "🏡",
-      "name": "Homestay Nhà Vườn Cù Lao (demo)", "phone": "0900000301", "zalo": "0900000301",
+      "id": "h1",
+      "lat": 10.496,
+      "lng": 105.5085,
+      "icon": "🏡",
+      "name": "Homestay Nhà Vườn Cù Lao (demo)",
+      "phone": "0900000301",
+      "zalo": "0900000301",
       "price": "250.000–400.000đ/đêm",
-      "desc": { "vi": "Nhà gỗ giữa vườn xoài, có xe đạp miễn phí, bữa sáng quê.", "en": "Wooden house in a mango garden, free bicycles, country breakfast." },
-      "amenities": ["wifi", "bike", "breakfast"]
+      "desc": {
+        "vi": "Nhà gỗ giữa vườn xoài, có xe đạp miễn phí, bữa sáng quê.",
+        "en": "Wooden house in a mango garden, free bicycles, country breakfast."
+      },
+      "amenities": [
+        "wifi",
+        "bike",
+        "breakfast"
+      ]
     },
     {
-      "id": "h2", "lat": 10.5130, "lng": 105.4690, "icon": "🛖",
-      "name": "Homestay Bến Sông (demo)", "phone": "0900000302", "zalo": "0900000302",
+      "id": "h2",
+      "lat": 10.518,
+      "lng": 105.4935,
+      "icon": "🛖",
+      "name": "Homestay Bến Sông (demo)",
+      "phone": "0900000302",
+      "zalo": "0900000302",
       "price": "300.000–500.000đ/đêm",
-      "desc": { "vi": "Sát bờ sông, view hoàng hôn, có tour xuồng.", "en": "Right on the riverbank, sunset view, boat tours." },
-      "amenities": ["wifi", "boat", "breakfast"]
+      "desc": {
+        "vi": "Sát bờ sông, view hoàng hôn, có tour xuồng.",
+        "en": "Right on the riverbank, sunset view, boat tours."
+      },
+      "amenities": [
+        "wifi",
+        "boat",
+        "breakfast"
+      ]
     },
     {
-      "id": "h3", "lat": 10.5005, "lng": 105.4870, "icon": "🏠",
-      "name": "Nhà Dân Út Mến (demo)", "phone": "0900000303", "zalo": "0900000303",
+      "id": "h3",
+      "lat": 10.47,
+      "lng": 105.538,
+      "icon": "🏠",
+      "name": "Nhà Dân Út Mến (demo)",
+      "phone": "0900000303",
+      "zalo": "0900000303",
       "price": "150.000đ/người/đêm",
-      "desc": { "vi": "Ở cùng gia đình nông dân, nấu ăn cùng chủ nhà.", "en": "Stay with a farming family and cook together." },
-      "amenities": ["meal", "garden"]
+      "desc": {
+        "vi": "Ở cùng gia đình nông dân, nấu ăn cùng chủ nhà.",
+        "en": "Stay with a farming family and cook together."
+      },
+      "amenities": [
+        "meal",
+        "garden"
+      ]
     }
   ],
   "products": [
-    { "id": "p1", "icon": "🥭", "price": 60000, "unit": { "vi": "kg", "en": "kg" }, "seller": "Chú Sáu (demo)", "name": { "vi": "Xoài cát Hòa Lộc", "en": "Hoa Loc mango" }, "desc": { "vi": "Xoài chín cây, ngọt thơm.", "en": "Tree-ripened, sweet and fragrant." } },
-    { "id": "p2", "icon": "🟢", "price": 35000, "unit": { "vi": "kg", "en": "kg" }, "seller": "Chú Sáu (demo)", "name": { "vi": "Xoài Đài Loan xanh", "en": "Green Taiwan mango" }, "desc": { "vi": "Giòn, chua nhẹ — ăn với muối tôm.", "en": "Crunchy, mildly sour — eat with chili salt." } },
-    { "id": "p3", "icon": "🍘", "price": 45000, "unit": { "vi": "xấp", "en": "pack" }, "seller": "Bà Năm (demo)", "name": { "vi": "Bánh phồng nước dừa", "en": "Coconut rice crackers" }, "desc": { "vi": "Làm thủ công, không chất bảo quản.", "en": "Handmade, no preservatives." } },
-    { "id": "p4", "icon": "🐟", "price": 120000, "unit": { "vi": "hũ 500g", "en": "500g jar" }, "seller": "Cô Ba (demo)", "name": { "vi": "Mắm cá linh", "en": "Fermented linh fish" }, "desc": { "vi": "Mắm nhà làm, dùng nấu lẩu mắm.", "en": "Homemade, for fish hotpot." } },
-    { "id": "p5", "icon": "🍌", "price": 25000, "unit": { "vi": "nải", "en": "bunch" }, "seller": "Cô Tư (demo)", "name": { "vi": "Chuối xiêm", "en": "Xiem bananas" }, "desc": { "vi": "Chuối chín cây.", "en": "Tree-ripened bananas." } },
-    { "id": "p6", "icon": "🧺", "price": 90000, "unit": { "vi": "cái", "en": "piece" }, "seller": "Hợp tác xã (demo)", "name": { "vi": "Giỏ đan lục bình", "en": "Water hyacinth basket" }, "desc": { "vi": "Thủ công mỹ nghệ địa phương.", "en": "Local handicraft." } }
+    {
+      "id": "p1",
+      "icon": "🥭",
+      "price": 60000,
+      "unit": {
+        "vi": "kg",
+        "en": "kg"
+      },
+      "seller": "Chú Sáu (demo)",
+      "name": {
+        "vi": "Xoài cát Hòa Lộc",
+        "en": "Hoa Loc mango"
+      },
+      "desc": {
+        "vi": "Xoài chín cây, ngọt thơm.",
+        "en": "Tree-ripened, sweet and fragrant."
+      }
+    },
+    {
+      "id": "p2",
+      "icon": "🟢",
+      "price": 35000,
+      "unit": {
+        "vi": "kg",
+        "en": "kg"
+      },
+      "seller": "Chú Sáu (demo)",
+      "name": {
+        "vi": "Xoài Đài Loan xanh",
+        "en": "Green Taiwan mango"
+      },
+      "desc": {
+        "vi": "Giòn, chua nhẹ — ăn với muối tôm.",
+        "en": "Crunchy, mildly sour — eat with chili salt."
+      }
+    },
+    {
+      "id": "p3",
+      "icon": "🍘",
+      "price": 45000,
+      "unit": {
+        "vi": "xấp",
+        "en": "pack"
+      },
+      "seller": "Bà Năm (demo)",
+      "name": {
+        "vi": "Bánh phồng nước dừa",
+        "en": "Coconut rice crackers"
+      },
+      "desc": {
+        "vi": "Làm thủ công, không chất bảo quản.",
+        "en": "Handmade, no preservatives."
+      }
+    },
+    {
+      "id": "p4",
+      "icon": "🐟",
+      "price": 120000,
+      "unit": {
+        "vi": "hũ 500g",
+        "en": "500g jar"
+      },
+      "seller": "Cô Ba (demo)",
+      "name": {
+        "vi": "Mắm cá linh",
+        "en": "Fermented linh fish"
+      },
+      "desc": {
+        "vi": "Mắm nhà làm, dùng nấu lẩu mắm.",
+        "en": "Homemade, for fish hotpot."
+      }
+    },
+    {
+      "id": "p5",
+      "icon": "🍌",
+      "price": 25000,
+      "unit": {
+        "vi": "nải",
+        "en": "bunch"
+      },
+      "seller": "Cô Tư (demo)",
+      "name": {
+        "vi": "Chuối xiêm",
+        "en": "Xiem bananas"
+      },
+      "desc": {
+        "vi": "Chuối chín cây.",
+        "en": "Tree-ripened bananas."
+      }
+    },
+    {
+      "id": "p6",
+      "icon": "🧺",
+      "price": 90000,
+      "unit": {
+        "vi": "cái",
+        "en": "piece"
+      },
+      "seller": "Hợp tác xã (demo)",
+      "name": {
+        "vi": "Giỏ đan lục bình",
+        "en": "Water hyacinth basket"
+      },
+      "desc": {
+        "vi": "Thủ công mỹ nghệ địa phương.",
+        "en": "Local handicraft."
+      }
+    }
   ]
 }
