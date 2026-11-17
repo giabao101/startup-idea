@@ -35,6 +35,29 @@
   };
   const GM_LAYER = { traffic: "traffic", transit: "transit", bicycling: "bicycling" };
 
+  // Keyless Google Maps embed (same iframe as Google Maps "Share > Embed a map"). 5e0 = map, 5e1 = satellite.
+  function embedUrl(lat, lng, zoom, base, lang) {
+    const t = base === "satellite" ? 1 : 0;
+    return `https://www.google.com/maps/embed?origin=mfe&pb=!1m4!2m1!1s${lat.toFixed(5)},${lng.toFixed(5)}!5e${t}!6i${Math.round(zoom)}!3m1!1s${lang}!5m1!1s${lang}`;
+  }
+
+  // ---------- Free 3D buildings: MapLibre GL + OpenFreeMap (no key) ----------
+  const ML_VER = "5.24.1";
+  function loadMapLibre() {
+    if (window.maplibregl) return Promise.resolve();
+    return new Promise((ok, no) => {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = `https://unpkg.com/maplibre-gl@${ML_VER}/dist/maplibre-gl.css`;
+      document.head.appendChild(css);
+      const s = document.createElement("script");
+      s.src = `https://unpkg.com/maplibre-gl@${ML_VER}/dist/maplibre-gl.js`;
+      s.onload = ok;
+      s.onerror = () => no(new Error("MapLibre failed to load"));
+      document.head.appendChild(s);
+    });
+  }
+
   // ---------- Air quality readout (Open-Meteo, free, no key) ----------
   async function airQuality(lat, lng) {
     const u = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lng}&current=us_aqi,pm2_5,pm10&timezone=auto`;
@@ -185,9 +208,44 @@
     const group = L.layerGroup().addTo(map);
     const markers = {};
     let me = null;
+    let pts3d = [];
+    let ml = null, mlBox = null;
+
+    async function open3d() {
+      await loadMapLibre();
+      const c = map.getCenter();
+      mlBox = document.createElement("div");
+      mlBox.className = "ml-3d";
+      mlBox.style.cssText = "position:absolute;inset:0;z-index:900"; // maplibre-gl.css sets position:relative on its container
+      o.el.appendChild(mlBox);
+      ml = new maplibregl.Map({
+        container: mlBox, style: "https://tiles.openfreemap.org/styles/liberty",
+        center: [c.lng, c.lat], zoom: Math.max(map.getZoom(), 16.5), pitch: 60, bearing: -25,
+        maxPitch: 75, attributionControl: { compact: true },
+      });
+      ml.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "bottom-right");
+      o.el.classList.add("is-3d");
+      pts3d.forEach((p) => {
+        const el = document.createElement("div");
+        el.innerHTML = p.pinHtml;
+        const pin = el.firstElementChild;
+        new maplibregl.Marker({ element: pin, anchor: "bottom" }).setLngLat([p.lng, p.lat])
+          .setPopup(new maplibregl.Popup({ offset: 28, maxWidth: "280px" }).setHTML(o.popupHtml(p))).addTo(ml);
+      });
+    }
+    function close3d() {
+      if (!ml) return;
+      const c = ml.getCenter();
+      map.setView([c.lat, c.lng], Math.min(Math.round(ml.getZoom()), 18));
+      ml.remove();
+      mlBox.remove();
+      o.el.classList.remove("is-3d");
+      ml = mlBox = null;
+    }
     return {
       kind: "leaflet",
       setPoints(pts) {
+        pts3d = pts;
         group.clearLayers();
         for (const k in markers) delete markers[k];
         pts.forEach((p) => {
@@ -196,25 +254,29 @@
           markers[p.key] = m;
         });
       },
-      focus(key) { const m = markers[key]; if (m) { map.setView(m.getLatLng(), 16); m.openPopup(); } },
+      focus(key) { if (ml) close3d(); const m = markers[key]; if (m) { map.setView(m.getLatLng(), 16); m.openPopup(); } },
       setUser(pos) {
         const icon = L.divIcon({ className: "", html: '<div class="me-pin"></div>', iconSize: [18, 18] });
         if (me) me.setLatLng(pos); else me = L.marker(pos, { icon }).addTo(map).bindPopup(o.t("map.you"));
         map.setView(pos, 14);
       },
-      resize() { map.invalidateSize(); },
+      resize() { map.invalidateSize(); if (ml) ml.resize(); },
       getView() { const c = map.getCenter(); return { lat: c.lat, lng: c.lng, zoom: map.getZoom(), base }; },
       setBase(b) { map.removeLayer(bases[base]); base = b; bases[b].addTo(map); bases[b].bringToBack && bases[b].bringToBack(); },
-      supports(name) { return name in over || name === "aq"; },
+      supports(name) { return name in over || name === "aq" || name === "buildings"; },
       async toggle(name, on) {
         if (over[name]) { on ? over[name].addTo(map) : map.removeLayer(over[name]); return true; }
+        if (name === "buildings") {
+          if (on) { try { await open3d(); } catch { return false; } } else close3d();
+          return true;
+        }
         return name === "aq"; // readout only
       },
     };
   }
 
   window.MapView = {
-    GM, GM_LAYER, airQuality,
+    GM, GM_LAYER, airQuality, embedUrl,
     async create(o) {
       if (o.key) {
         try {

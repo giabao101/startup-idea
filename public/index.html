@@ -91,6 +91,7 @@
       <div class="map-wrap">
         <div class="tile map-tile" id="mapCard">
           <div id="leaflet" class="map-canvas"></div>
+          <iframe id="gmEmbed" class="gm-embed" title="Google Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen hidden></iframe>
           <a class="map-btn gm-open" id="gmOpen" href="https://www.google.com/maps" target="_blank" rel="noopener"><span data-ico="external"></span><span data-i18n="map.openGm">Mở Google Maps</span></a>
           <div class="map-chips-stack">
             <div class="map-chip" id="aqChip" hidden></div>
@@ -98,6 +99,10 @@
           </div>
           <button class="map-btn layers-btn" id="layersBtn" type="button" aria-expanded="false" aria-controls="layersPanel"><span data-ico="layers"></span><span data-i18n="map.layers">Lớp bản đồ</span></button>
           <div class="layers-panel" id="layersPanel" hidden>
+            <div class="lp-src" role="group">
+              <button type="button" data-src="web" class="on" data-i18n="map.srcWeb">Bản đồ web</button>
+              <button type="button" data-src="google" data-i18n="map.srcGoogle">Google Maps</button>
+            </div>
             <p class="lp-h" data-i18n="map.type">Loại bản đồ</p>
             <div class="lp-base">
               <button type="button" data-base="roadmap" class="on"><span class="thumb t-road"></span><span data-i18n="map.road">Mặc định</span></button>

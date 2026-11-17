@@ -83,7 +83,21 @@
 
   // ---------- Map (Google Maps when a key is configured, Leaflet otherwise) ----------
   const GM = () => window.MapView.GM;
-  const mapState = { base: "roadmap", on: new Set() };
+  const mapState = { base: "roadmap", on: new Set(), src: "web", focus: null };
+
+  function showEmbed() {
+    const f = $("#gmEmbed");
+    const v = mapState.focus || (mapView ? mapView.getView() : { ...DATA.center });
+    f.src = window.MapView.embedUrl(v.lat, v.lng, v.zoom || 15, mapState.base, lang === "vi" ? "vi" : "en");
+    f.hidden = false;
+  }
+  function setSource(src) {
+    mapState.src = src;
+    $$("[data-src]").forEach((b) => b.classList.toggle("on", b.dataset.src === src));
+    $("#mapCard").classList.toggle("is-embed", src === "google");
+    if (src === "google") showEmbed(); else { $("#gmEmbed").hidden = true; mapState.focus = null; }
+    syncLayerButtons();
+  }
 
   function popupHtml(p) {
     const sv = mapView && mapView.kind === "google"
@@ -140,7 +154,9 @@
       b.classList.toggle("ext", !!ext);
       b.title = ext ? t("map.opensGm") : "";
     });
-    $("#lpNote").textContent = mapView && mapView.kind === "leaflet" ? t("map.noKey") : "";
+    $("#lpNote").textContent = mapState.src === "google" ? t("map.googleNote") : mapView && mapView.kind === "leaflet" ? t("map.noKey") : "";
+    $$("[data-layer]").forEach((b) => (b.disabled = mapState.src === "google"));
+    const ter = $('[data-base="terrain"]'); if (ter) ter.disabled = mapState.src === "google";
     $("#fireChip").hidden = !mapState.on.has("fire");
     if (!mapState.on.has("aq")) $("#aqChip").hidden = true;
   }
@@ -204,7 +220,13 @@
   function focusPoint(key) {
     route("map", { scroll: false });
     $("#mapCard").scrollIntoView({ behavior: "smooth", block: "center" });
-    initMap().then(() => setTimeout(() => mapView && mapView.focus(key), 150));
+    initMap().then(() => setTimeout(() => {
+      if (!mapView) return;
+      if (mapState.src === "google") {
+        const p = allPoints().find((x) => `${x.kind}:${x.id}` === key);
+        if (p) { mapState.focus = { lat: p.lat, lng: p.lng, zoom: 17 }; showEmbed(); }
+      } else mapView.focus(key);
+    }, 150));
   }
 
   function nearItem(p) {
@@ -503,10 +525,11 @@
 
   // ---------- Events ----------
   document.addEventListener("click", (e) => {
-    const el = e.target.closest("[data-base],[data-layer],[data-sv],[data-open],[data-focus],[data-book],[data-add],[data-inc],[data-dec],[data-story],[data-askai],[data-q],[data-cat],[data-go]");
+    const el = e.target.closest("[data-src],[data-base],[data-layer],[data-sv],[data-open],[data-focus],[data-book],[data-add],[data-inc],[data-dec],[data-story],[data-askai],[data-q],[data-cat],[data-go]");
     if (!el) return;
     const d = el.dataset;
-    if (d.base) { if (mapView) { mapView.setBase(d.base); mapState.base = d.base; syncLayerButtons(); } return; }
+    if (d.src) { setSource(d.src); return; }
+    if (d.base) { if (mapView) { mapView.setBase(d.base); mapState.base = d.base; if (mapState.src === "google") showEmbed(); syncLayerButtons(); } return; }
     if (d.layer) { if (mapView) toggleLayer(d.layer, el); return; }
     if (d.sv) { const [la, ln] = d.sv.split(",").map(Number); mapView.streetViewAt(la, ln).then((ok) => { if (!ok) { toast(t("map.noPano")); window.open(GM().pano(la, ln), "_blank", "noopener"); } }); return; }
     if (d.open) openDetail(d.open);
