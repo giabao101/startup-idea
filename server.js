@@ -1,5 +1,5 @@
 // Cù Lao Giêng travel site — zero-dependency Node server (Node 18+).
-// Serves /public, proxies the AI guide to the xAI Grok API, stores bookings/orders as JSON.
+// Serves /public, proxies the AI guide to the Groq API (OpenAI-compatible), stores bookings/orders as JSON.
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -15,8 +15,9 @@ if (fs.existsSync(envFile)) {
 }
 
 const PORT = Number(process.env.PORT) || 3000;
-const API_KEY = process.env.XAI_API_KEY || "";
-const MODEL = process.env.GROK_MODEL || "grok-4";
+const API_KEY = process.env.GROQ_API_KEY || "";
+const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+const REASONING = /gpt-oss|qwen3/.test(MODEL); // reasoning models: keep thinking short, answer only
 const PUBLIC = path.join(__dirname, "public");
 const STORE = path.join(__dirname, "data");
 fs.mkdirSync(STORE, { recursive: true });
@@ -42,7 +43,7 @@ function knowledgeBase() {
 function systemPrompt(lang, userPos) {
   return `Bạn là hướng dẫn viên du lịch AI thân thiện của Cù Lao Giêng (Chợ Mới, An Giang, Việt Nam) — cù lao giữa sông Tiền, nổi tiếng là "vùng đất thánh" với nhà thờ, tu viện cổ và vườn xoài.
 Nhiệm vụ: giới thiệu lịch sử, giải thích kiến trúc và giá trị văn hóa, kể chuyện lịch sử sinh động, gợi ý món ăn, quán ăn, giá cả, trải nghiệm vườn trái cây, homestay, lịch trình.
-Trả lời bằng ${lang === "en" ? "TIẾNG ANH (English)" : "TIẾNG VIỆT"}, ngắn gọn (tối đa ~200 từ), dùng gạch đầu dòng khi liệt kê. Không dùng markdown phức tạp.
+Trả lời bằng ${lang === "en" ? "TIẾNG ANH (English)" : "TIẾNG VIỆT"}, ngắn gọn (tối đa ~200 từ), dùng gạch đầu dòng khi liệt kê. Chỉ viết văn bản thuần: không dùng markdown, không dùng ** hay #.
 Ưu tiên dữ liệu dưới đây. Nếu không chắc chắn một sự kiện lịch sử (năm, tên người), hãy nói rõ là chưa chắc thay vì bịa. Dữ liệu người dân/quán/homestay hiện là dữ liệu mẫu (demo).
 Khi gợi ý trải nghiệm, homestay hoặc mua hàng, nhắc khách dùng nút "Đặt lịch" / "Thêm vào giỏ" trên website.
 ${userPos ? `Vị trí hiện tại của khách: ${userPos.lat},${userPos.lng}.` : ""}
@@ -51,21 +52,34 @@ DỮ LIỆU:
 ${knowledgeBase()}`;
 }
 
-// xAI Grok API (OpenAI-compatible chat completions)
-async function callGrok(messages, lang, userPos) {
-  const r = await fetch("https://api.x.ai/v1/chat/completions", {
+// Groq API (OpenAI-compatible chat completions)
+async function callAI(messages, lang, userPos) {
+  const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${API_KEY}` },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 800,
+      max_completion_tokens: 2000,
       temperature: 0.6,
+      ...(REASONING ? { reasoning_effort: "low", reasoning_format: "hidden" } : {}),
       messages: [{ role: "system", content: systemPrompt(lang, userPos) }, ...messages],
     }),
   });
-  if (!r.ok) throw new Error(`Grok API ${r.status}: ${await r.text()}`);
+  if (!r.ok) throw new Error(`Groq API ${r.status}: ${await r.text()}`);
   const j = await r.json();
-  return (j.choices?.[0]?.message?.content || "").trim();
+  return plainText(j.choices?.[0]?.message?.content || "");
+}
+
+// The chat bubbles show plain text: drop markdown marks the model may still emit.
+function plainText(t) {
+  return t
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/__(.+?)__/g, "$1")
+    .replace(/^#{1,6}\s*/gm, "")
+    .replace(/^\s*[-*]\s+/gm, "• ")
+    .replace(/(^|\s)\*(\S[^*]*?)\*(?=\s|[.,!?]|$)/g, "$1$2")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 // Offline fallback: keyword search over the knowledge base
@@ -128,7 +142,7 @@ async function api(req, res, url) {
     const last = messages[messages.length - 1].content;
     if (!API_KEY) return send(res, 200, { reply: offlineAnswer(last, lang), offline: true });
     try {
-      return send(res, 200, { reply: await callGrok(messages, lang, userPos) });
+      return send(res, 200, { reply: await callAI(messages, lang, userPos) });
     } catch (e) {
       console.error(e.message);
       return send(res, 200, { reply: offlineAnswer(last, lang), offline: true });
@@ -199,7 +213,7 @@ http.createServer(async (req, res) => {
     send(res, 500, { error: "server error" });
   }
 }).listen(PORT, () => {
-  console.log(`Cù Lao Giêng site: http://localhost:${PORT}  (AI: ${API_KEY ? MODEL : "offline mode — set XAI_API_KEY in .env"})`);
+  console.log(`Cù Lao Giêng site: http://localhost:${PORT}  (AI: ${API_KEY ? MODEL : "offline mode — set GROQ_API_KEY in .env"})`);
   startKeepAlive();
 });
 
