@@ -1,9 +1,8 @@
-// Copy shared files from the website into the app bundle (offline fallback data + icon set).
+// The app shows the same UI as the website: copy public/ into www/ before `cap sync`.
 const fs = require("fs");
 const path = require("path");
-const root = path.join(__dirname, "..", "..");
+const src = path.join(__dirname, "..", "..", "public");
 const www = path.join(__dirname, "..", "www");
-for (const [from, to] of [["public/js/icons.js", "icons.js"], ["public/data/content.json", "content.json"]]) {
-  fs.copyFileSync(path.join(root, from), path.join(www, to));
-  console.log("copied", from, "->", "www/" + to);
-}
+fs.rmSync(www, { recursive: true, force: true });
+fs.cpSync(src, www, { recursive: true });
+console.log("copied public/ -> mobile/www/");

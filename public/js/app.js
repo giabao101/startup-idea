@@ -13,6 +13,9 @@
   const chatHistory = [];
   const VIEWS = ["home", "map", "guide", "food", "experience", "stay", "shop"];
 
+  // Inside the Android app (Capacitor) pages load from https://localhost, so API calls go to the Render server.
+  const IN_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  const API = IN_APP ? "https://cu-lao-gieng.onrender.com" : "";
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const t = (k) => (I18N[lang] && I18N[lang][k]) ?? I18N.vi[k] ?? k;
@@ -188,7 +191,7 @@
         <h4>${t("detail.tips")}</h4><p>${esc(L(p.tips))}</p>
         <div class="actions">
           <a class="btn ghost small" target="_blank" rel="noopener" href="${directionsUrl(p)}">${icon("compass")}${t("btn.directions")}</a>
-          <button class="btn primary small" type="button" data-askai="${esc(L(p.name))}">${icon("sparkles")}${t("btn.ask")}</button>
+          <button class="btn primary small" type="button" data-askai="${esc(L(p.name))}">${icon("chat")}${t("btn.ask")}</button>
         </div>`);
     }
     if (kind === "eatery") {
@@ -232,7 +235,7 @@
       const body = Object.fromEntries(new FormData(ev.target));
       body.lang = lang;
       try {
-        const r = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        const r = await fetch(API + "/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
         if (!r.ok) throw new Error();
         closeModal();
         toast(t("book.ok"));
@@ -241,9 +244,10 @@
   }
 
   // ---------- Views ----------
+  // Title names the day, e.g. "Thứ Hai, 17 tháng 11" / "Monday, 17 November"
   function greeting() {
-    const h = new Date().getHours();
-    return t(h < 11 ? "greet.morning" : h < 14 ? "greet.noon" : h < 18 ? "greet.afternoon" : "greet.evening");
+    const s = new Date().toLocaleDateString(lang === "vi" ? "vi-VN" : "en-GB", { weekday: "long", day: "numeric", month: "long" });
+    return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
   function renderHome() {
@@ -283,7 +287,7 @@
         <p>${esc(L(f.desc))}</p>
         <p class="meta"><b>${t("food.ingr")}:</b> ${esc(L(f.ingredients))}</p>
         <p class="meta">${t("food.price")}: <span class="price">${esc(f.price)}</span></p>
-        <div class="actions"><button class="btn ghost small" type="button" data-askai="${esc(L(f.name))}">${icon("sparkles")}${t("btn.ask")}</button></div>
+        <div class="actions"><button class="btn ghost small" type="button" data-askai="${esc(L(f.name))}">${icon("chat")}${t("btn.ask")}</button></div>
       </article>`).join("");
 
     $("#eateryGrid").innerHTML = DATA.eateries.map((e) => `
@@ -388,7 +392,7 @@
     pending.classList.add("typing");
     let answer;
     try {
-      const r = await fetch("/api/chat", {
+      const r = await fetch(API + "/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: chatHistory.slice(-12), lang, userPos }),
@@ -431,20 +435,6 @@
     renderHome(); renderMarkers(); renderNearby(); renderFood(); renderExp(); renderStay(); renderShop(); renderStories(); renderCart(); renderSuggest();
     requestAnimationFrame(moveIndicator);
   }
-
-  // ---------- Ripple on press ----------
-  document.addEventListener("pointerdown", (e) => {
-    const b = e.target.closest(".btn");
-    if (!b || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const r = b.getBoundingClientRect();
-    const s = document.createElement("span");
-    s.className = "ripple";
-    s.style.left = e.clientX - r.left + "px";
-    s.style.top = e.clientY - r.top + "px";
-    s.style.setProperty("--rs", Math.ceil(Math.hypot(r.width, r.height) / 6));
-    b.appendChild(s);
-    setTimeout(() => s.remove(), 650);
-  });
 
   // ---------- Events ----------
   document.addEventListener("click", (e) => {
@@ -497,7 +487,7 @@
     btn.disabled = true;
     const body = { ...Object.fromEntries(new FormData(e.target)), items: cart, lang };
     try {
-      const r = await fetch("/api/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const r = await fetch(API + "/api/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (!r.ok) throw new Error();
       const j = await r.json();
       cart = []; saveCart(); e.target.reset();
@@ -506,6 +496,20 @@
     } catch { toast(t("err")); }
     btn.disabled = false;
   });
+
+  // ---------- Android hardware back button (app only) ----------
+  const CapApp = IN_APP && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+  if (CapApp) {
+    let lastBack = 0;
+    CapApp.addListener("backButton", () => {
+      if ($("#modal").classList.contains("open")) return closeModal();
+      if ($("#cart").classList.contains("open")) return openCart(false);
+      if (currentView !== "home") return route("home");
+      if (Date.now() - lastBack < 2000) return CapApp.exitApp();
+      lastBack = Date.now();
+      toast(lang === "vi" ? "Nhấn Quay lại lần nữa để thoát" : "Press back again to exit");
+    });
+  }
 
   // ---------- Boot ----------
   $("#brandIcon").innerHTML = icon("mango");

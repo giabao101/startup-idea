@@ -2,6 +2,10 @@
   "appId": "vn.culaogieng.app",
   "appName": "Cù Lao Giêng",
   "webDir": "www",
-  "server": { "androidScheme": "https" },
-  "android": { "backgroundColor": "#0e4a47" }
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "backgroundColor": "#d3ecfb"
+  }
 }

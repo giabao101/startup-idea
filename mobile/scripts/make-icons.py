@@ -2,7 +2,7 @@
 from PIL import Image, ImageDraw
 import math, os
 OUT = os.path.join(os.path.dirname(__file__), "..", "assets")
-TEAL, TEAL2 = (14, 74, 71, 255), (19, 98, 94, 255)
+TEAL, TEAL2 = (3, 105, 161, 255), (14, 116, 144, 255)  # deep sky + river
 MANGO, MANGO_D, HI, LEAF, LEAF_D, STEM = (246, 167, 35, 255), (224, 123, 0, 255), (255, 214, 128, 255), (63, 140, 74, 255), (40, 100, 50, 255), (92, 60, 20, 255)
 SS = 4  # supersampling
 
@@ -51,6 +51,6 @@ render(S, (0, 0, 0, 0), lambda d, S: mango(d, S / 2, S / 2 + 20, S * .52)).save(
 render(S, TEAL, lambda d, S: river(d, S)).save(os.path.join(OUT, "icon-background.png"))
 W = 2732
 SS = 1
-sp = render(W, TEAL, lambda d, S: mango(d, S / 2, S / 2, 640))
+sp = render(W, (211, 236, 251, 255), lambda d, S: mango(d, S / 2, S / 2, 640))
 sp.save(os.path.join(OUT, "splash.png")); sp.save(os.path.join(OUT, "splash-dark.png"))
 print("ok")

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#b98f6a" />
+  <meta name="theme-color" content="#d3ecfb" />
   <title>Cù Lao Giêng — Trợ lý du lịch AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,8 +20,8 @@
       <span class="brand-text" data-i18n="welcome">Chào mừng đến Cù Lao Giêng</span>
     </a>
     <button class="prompt-pill" id="promptPill" type="button">
-      <span class="orb" aria-hidden="true"></span>
-      <span class="prompt-text" data-i18n="prompt.pill">Hỏi hướng dẫn viên AI về cù lao…</span>
+      <span class="prompt-ico" data-ico="chat" aria-hidden="true"></span>
+      <span class="prompt-text" data-i18n="prompt.pill">Hỏi hướng dẫn viên AI</span>
     </button>
     <div class="top-actions">
       <button id="langBtn" class="round-btn lang-btn" type="button" aria-label="Language">EN</button>
@@ -36,10 +36,10 @@
     <section class="view" data-view="home" id="view-home">
       <div class="view-head">
         <div>
-          <h1 id="greeting">Chào buổi sáng</h1>
+          <h1 id="greeting">Cù Lao Giêng hôm nay</h1>
           <p class="muted lede" data-i18n="home.sub"></p>
         </div>
-        <button class="btn primary" data-go="guide" type="button"><span data-ico="sparkles"></span><span data-i18n="home.askAi">Hỏi AI lịch trình riêng</span></button>
+        <button class="btn primary" data-go="guide" type="button"><span data-ico="chat"></span><span data-i18n="home.askAi">Hỏi AI lịch trình riêng</span></button>
       </div>
 
       <div class="bento">
@@ -156,7 +156,7 @@
     <span class="dock-indicator" id="dockIndicator" aria-hidden="true"></span>
     <a href="#home" data-tab="home"><span data-ico="home"></span><span class="lbl" data-i18n="nav.home"></span></a>
     <a href="#map" data-tab="map"><span data-ico="map"></span><span class="lbl" data-i18n="nav.map"></span></a>
-    <a href="#guide" data-tab="guide"><span data-ico="sparkles"></span><span class="lbl" data-i18n="nav.guide"></span></a>
+    <a href="#guide" data-tab="guide"><span data-ico="chat"></span><span class="lbl" data-i18n="nav.guide"></span></a>
     <a href="#food" data-tab="food"><span data-ico="utensils"></span><span class="lbl" data-i18n="nav.food"></span></a>
     <a href="#experience" data-tab="experience"><span data-ico="leaf"></span><span class="lbl" data-i18n="nav.exp"></span></a>
     <a href="#stay" data-tab="stay"><span data-ico="bed"></span><span class="lbl" data-i18n="nav.stay"></span></a>
