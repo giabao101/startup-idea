@@ -10,7 +10,7 @@
   let currentView = "home";
   let cart = JSON.parse(localStorage.getItem("cart") || "[]");
   const chatHistory = [];
-  const VIEWS = ["home", "map", "guide", "food", "experience", "stay", "shop"];
+  const VIEWS = ["home", "map", "guide", "food", "experience", "stay", "shop", "account", "admin"];
 
   // Inside the Android app (Capacitor) pages load from https://localhost, so API calls go to the Render server.
   const IN_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
@@ -46,6 +46,7 @@
     if (location.hash !== "#" + view) history.replaceState(null, "", "#" + view);
     moveIndicator();
     if (scroll) window.scrollTo({ top: 0, behavior: "smooth" });
+    if (view === "account" || view === "admin") window.AccountUI.render(view);
     if (view === "map" && DATA) initMap().then(() => setTimeout(() => mapView && mapView.resize(), 60));
   }
 
@@ -306,8 +307,8 @@
       <form class="form" id="bookForm">
         <input type="hidden" name="target" value="${kind}:${o.id}" />
         <input type="hidden" name="targetName" value="${esc(title)}" />
-        <input name="name" required autocomplete="name" placeholder="${t("form.name")}" />
-        <input name="phone" required inputmode="tel" autocomplete="tel" pattern="[0-9+ ]{8,15}" placeholder="${t("form.phone")}" />
+        <input name="name" required autocomplete="name" placeholder="${t("form.name")}" value="${esc((Auth.user() || {}).name || "")}" />
+        <input name="phone" required inputmode="tel" pattern="[0-9+ ]{8,15}" placeholder="${t("form.phone")}" value="${esc((Auth.user() || {}).phone || "")}" />
         <div class="row2">
           <label class="small">${t("book.date")}<input type="date" name="date" min="${today}" required /></label>
           <label class="small">${t("book.people")}<input type="number" name="people" min="1" value="2" required /></label>
@@ -322,7 +323,7 @@
       const body = Object.fromEntries(new FormData(ev.target));
       body.lang = lang;
       try {
-        const r = await fetch(API + "/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        const r = await fetch(API + "/api/contact", { method: "POST", headers: Auth.headers({ "Content-Type": "application/json" }), body: JSON.stringify(body) });
         if (!r.ok) throw new Error();
         closeModal();
         toast(t("book.ok"));
@@ -454,7 +455,14 @@
       : `<li class="muted">${t("cart.empty")}</li>`;
     $("#cartTotal").textContent = money(lines.reduce((s, c) => s + c.qty * c.p.price, 0));
   }
+  // Fill the order form from the signed-in account (customers can still change the values).
+  function prefillOrder() {
+    const u = Auth.user(), f = $("#orderForm");
+    if (u) ["name", "phone", "email", "address"].forEach((k) => { if (!f.elements[k].value) f.elements[k].value = u[k] || ""; });
+    $("#cartHint").innerHTML = u ? "" : `${t("acc.cartHint")} <button type="button" class="linkish" data-auth-open="login">${t("acc.login")}</button>`;
+  }
   function openCart(open) {
+    if (open) prefillOrder();
     $("#cart").classList.toggle("open", open);
     $("#scrim").classList.toggle("open", open);
     $("#cart").setAttribute("aria-hidden", String(!open));
@@ -585,10 +593,10 @@
     btn.disabled = true;
     const body = { ...Object.fromEntries(new FormData(e.target)), items: cart, lang };
     try {
-      const r = await fetch(API + "/api/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const r = await fetch(API + "/api/order", { method: "POST", headers: Auth.headers({ "Content-Type": "application/json" }), body: JSON.stringify(body) });
       if (!r.ok) throw new Error();
       const j = await r.json();
-      cart = []; saveCart(); e.target.reset();
+      cart = []; saveCart(); e.target.reset(); prefillOrder();
       openCart(false);
       toast(t("cart.ok") + j.id);
     } catch { toast(t("err")); }
@@ -609,10 +617,22 @@
     });
   }
 
+  // ---------- Accounts ----------
+  function syncAccount() {
+    const u = Auth.user();
+    $("#accDot").hidden = !u;
+    $("#accountBtn").title = u ? u.name : t("acc.login");
+    if (currentView === "account" || currentView === "admin") window.AccountUI.render(currentView);
+  }
+  document.addEventListener("auth-change", syncAccount);
+  $("#accountBtn").addEventListener("click", () => { closeModal(); window.AccountUI.accountButton(); });
+  window.CLG = { API, t, esc, money, toast, route, openModal, closeModal, getLang: () => lang };
+
   // ---------- Boot ----------
   $("#brandIcon").innerHTML = icon("mango");
   paintIcons();
   applyLang();
+  syncAccount();
   route(location.hash.slice(1) || "home", { scroll: false });
   fetch("data/content.json")
     .then((r) => r.json())

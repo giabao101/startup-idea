@@ -30,3 +30,11 @@ Lưu ý: gói Free của Render không lưu file lâu dài — đơn hàng/đặ
 ### Chống ngủ (keep-alive)
 Gói Free ngủ sau 15 phút không có truy cập. Server tự ping `RENDER_EXTERNAL_URL/health` mỗi 10 phút (đổi bằng `KEEP_ALIVE_MINUTES`, tắt bằng `KEEP_ALIVE=off`). Xem log `[keep-alive]` trong tab **Logs** của Render.
 Dự phòng: thêm monitor HTTP miễn phí (cron-job.org, UptimeRobot) gọi `https://<ten-app>.onrender.com/health` mỗi 5–10 phút.
+
+## Tài khoản, đơn hàng, Excel và SQL
+- **Khách hàng** tự đăng ký (nút hình người trên thanh trên cùng). Đơn và lịch đặt gắn với tài khoản, khách xem trạng thái ở trang Tài khoản. Khách chưa đăng nhập vẫn đặt được.
+- **Quản trị viên** tạo từ biến môi trường `ADMIN_EMAIL` + `ADMIN_PASSWORD` (ít nhất 10 ký tự) mỗi lần server khởi động. Trang `#admin`: thống kê, danh sách đơn / đặt lịch / khách, đổi trạng thái, tải Excel (CSV) và file `.sql`.
+- **SQL**: đặt `DATABASE_URL` (PostgreSQL miễn phí ở neon.tech). Không có biến này, server dùng SQLite `data/app.db` (chỉ hợp cho chạy thử trên máy; ổ đĩa Render Free bị xóa mỗi lần deploy).
+- **Google Sheets**: làm theo `docs/google-sheets.gs`, rồi đặt `SHEETS_WEBHOOK_URL`, `SHEETS_WEBHOOK_SECRET`, `GOOGLE_SHEET_URL`. Mỗi đơn mới tự thêm một dòng.
+- `SESSION_SECRET`: chuỗi ngẫu nhiên ≥ 32 ký tự để giữ đăng nhập qua các lần khởi động lại.
+- Render: Build Command phải là `npm install --omit=dev` (cần gói `pg`).

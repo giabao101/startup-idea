@@ -25,6 +25,7 @@
     </button>
     <div class="top-actions">
       <button id="langBtn" class="round-btn lang-btn" type="button" aria-label="Language">EN</button>
+      <button id="accountBtn" class="round-btn" type="button" data-i18n-aria="acc.account"><span data-ico="user"></span><span class="acc-dot" id="accDot" hidden></span></button>
       <button id="cartBtn" class="round-btn" type="button" aria-label="Cart">
         <span data-ico="cart"></span><span id="cartCount" class="count" data-zero>0</span>
       </button>
@@ -180,6 +181,18 @@
       <div id="shopGrid" class="grid"></div>
     </section>
 
+    <!-- ACCOUNT -->
+    <section class="view" data-view="account" id="view-account">
+      <div class="view-head"><div><h1 data-i18n="acc.title">Tài khoản</h1><p class="muted lede" data-i18n="acc.sub"></p></div></div>
+      <div id="accountBody"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="view" data-view="admin" id="view-admin">
+      <div class="view-head"><div><h1 data-i18n="adm.title">Quản trị</h1><p class="muted lede" data-i18n="adm.sub"></p></div></div>
+      <div id="adminBody"></div>
+    </section>
+
     <p class="foot muted small" data-i18n="footer"></p>
   </main>
 
@@ -215,7 +228,11 @@
     <form id="orderForm" class="form">
       <input name="name" required autocomplete="name" data-i18n-ph="form.name" />
       <input name="phone" required inputmode="tel" autocomplete="tel" pattern="[0-9+ ]{8,15}" data-i18n-ph="form.phone" />
+      <input name="email" type="email" autocomplete="email" data-i18n-ph="form.email" />
       <input name="address" autocomplete="street-address" data-i18n-ph="form.address" />
+      <label class="small pay-label"><span data-i18n="pay.label">Thanh toán</span>
+        <select name="payment"><option value="cod" data-i18n="pay.cod">Khi nhận hàng</option><option value="bank" data-i18n="pay.bank">Chuyển khoản</option></select></label>
+      <p class="muted small cart-hint" id="cartHint"></p>
       <textarea name="note" rows="2" data-i18n-ph="form.note"></textarea>
       <button class="btn primary full" type="submit" data-i18n="cart.order">Đặt hàng</button>
     </form>
@@ -226,6 +243,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/mapview.js"></script>
+  <script src="js/account.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
 </body>

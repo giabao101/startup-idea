@@ -3,7 +3,7 @@ services:
     name: cu-lao-gieng
     runtime: node
     plan: free
-    buildCommand: "echo no build"
+    buildCommand: npm install --omit=dev
     startCommand: node server.js
     envVars:
       - key: GROQ_API_KEY
@@ -14,6 +14,22 @@ services:
         sync: false
       - key: GOOGLE_MAPS_MAP_ID
         sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SHEETS_WEBHOOK_URL
+        sync: false
+      - key: SHEETS_WEBHOOK_SECRET
+        sync: false
+      - key: GOOGLE_SHEET_URL
+        sync: false
+      - key: NODE_VERSION
+        value: "22"
       - key: KEEP_ALIVE_MINUTES
         value: "10"
     healthCheckPath: /health

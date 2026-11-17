@@ -1,5 +1,6 @@
-// Cù Lao Giêng travel site — zero-dependency Node server (Node 18+).
-// Serves /public, proxies the AI guide to the Groq API (OpenAI-compatible), stores bookings/orders as JSON.
+// Cù Lao Giêng travel site — Node server (Node 22.5+).
+// Serves /public, proxies the AI guide to the Groq API (OpenAI-compatible), stores accounts, orders and
+// bookings in SQL (PostgreSQL via DATABASE_URL, or local SQLite), syncs new orders to Google Sheets.
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
@@ -23,6 +24,12 @@ const STORE = path.join(__dirname, "data");
 fs.mkdirSync(STORE, { recursive: true });
 
 const CONTENT = JSON.parse(fs.readFileSync(path.join(PUBLIC, "data", "content.json"), "utf8"));
+const { open: openDb } = require("./lib/db");
+const { hashPassword, verifyPassword, makeTokens, rateLimiter } = require("./lib/auth");
+const { csv, sqlDump, pushToSheet, ORDER_COLUMNS, BOOKING_COLUMNS } = require("./lib/export");
+const tokens = makeTokens(STORE);
+const authLimit = rateLimiter(10, 15 * 60 * 1000);
+let db; // opened before the server starts listening
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
@@ -118,14 +125,49 @@ function send(res, code, obj) {
   res.writeHead(code, { "Content-Type": "application/json; charset=utf-8" });
   res.end(JSON.stringify(obj));
 }
-function append(file, record) {
-  const f = path.join(STORE, file);
-  const arr = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : [];
-  arr.push(record);
-  fs.writeFileSync(f, JSON.stringify(arr, null, 2));
-}
 const clean = (v, n = 300) => String(v ?? "").slice(0, n).trim();
 const validPhone = (p) => /^[0-9+ ]{8,15}$/.test(p);
+const validEmail = (e) => /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/.test(e);
+const newId = (prefix) => prefix + Date.now().toString(36).toUpperCase().slice(-4) + crypto.randomBytes(2).toString("hex").toUpperCase();
+const now = () => new Date().toISOString();
+const ORDER_STATUS = ["new", "confirmed", "shipping", "done", "cancelled"];
+const BOOKING_STATUS = ["new", "confirmed", "done", "cancelled"];
+const publicUser = (u) => u && { id: u.id, email: u.email, name: u.name, phone: u.phone || "", address: u.address || "", role: u.role };
+const clientIp = (req) => String(req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim();
+
+async function currentUser(req) {
+  const m = /^Bearer\s+(.+)$/i.exec(req.headers.authorization || "");
+  const t = m && tokens.read(m[1]);
+  if (!t) return null;
+  const u = await db.get("SELECT * FROM users WHERE id = ?", [t.uid]);
+  return u || null;
+}
+
+function sendFile(res, name, type, body) {
+  res.writeHead(200, {
+    "Content-Type": type,
+    "Content-Disposition": `attachment; filename="${name}"`,
+    "Cache-Control": "no-store",
+  });
+  res.end(body);
+}
+
+// Create or refresh the admin account from ADMIN_EMAIL / ADMIN_PASSWORD.
+async function ensureAdmin() {
+  const email = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+  const pw = process.env.ADMIN_PASSWORD || "";
+  if (!email || !pw) { console.warn("[auth] ADMIN_EMAIL / ADMIN_PASSWORD not set: no admin account"); return; }
+  if (pw.length < 10) { console.warn("[auth] ADMIN_PASSWORD must be at least 10 characters: admin not created"); return; }
+  const u = await db.get("SELECT * FROM users WHERE email = ?", [email]);
+  if (!u) {
+    await db.run("INSERT INTO users (id, email, name, role, pass_hash, created_at) VALUES (?, ?, ?, 'admin', ?, ?)",
+      [newId("U"), email, "Quản trị viên", hashPassword(pw), now()]);
+    console.log("[auth] admin account created:", email);
+  } else if (u.role !== "admin" || !verifyPassword(pw, u.pass_hash)) {
+    await db.run("UPDATE users SET role = 'admin', pass_hash = ? WHERE id = ?", [hashPassword(pw), u.id]);
+    console.log("[auth] admin account updated:", email);
+  }
+}
 
 // --- routes ---
 async function api(req, res, url) {
@@ -158,35 +200,141 @@ async function api(req, res, url) {
     }
   }
 
+  // ---------- Accounts ----------
+  if (url.pathname === "/api/auth/register" && req.method === "POST") {
+    if (!authLimit(clientIp(req))) return send(res, 429, { error: "too_many" });
+    const b = await readBody(req);
+    const email = clean(b.email, 254).toLowerCase();
+    const name = clean(b.name, 80), phone = clean(b.phone, 20), pw = String(b.password || "");
+    if (!name || !validEmail(email)) return send(res, 400, { error: "invalid" });
+    if (phone && !validPhone(phone)) return send(res, 400, { error: "phone" });
+    if (pw.length < 8 || pw.length > 200) return send(res, 400, { error: "password" });
+    if (await db.get("SELECT id FROM users WHERE email = ?", [email])) return send(res, 409, { error: "exists" });
+    const u = { id: newId("U"), email, name, phone, role: "customer" };
+    await db.run("INSERT INTO users (id, email, name, phone, role, pass_hash, created_at) VALUES (?, ?, ?, ?, 'customer', ?, ?)",
+      [u.id, email, name, phone, hashPassword(pw), now()]);
+    return send(res, 200, { token: tokens.issue(u), user: publicUser(u) });
+  }
+
+  if (url.pathname === "/api/auth/login" && req.method === "POST") {
+    if (!authLimit(clientIp(req))) return send(res, 429, { error: "too_many" });
+    const b = await readBody(req);
+    const u = await db.get("SELECT * FROM users WHERE email = ?", [clean(b.email, 254).toLowerCase()]);
+    if (!u || !verifyPassword(String(b.password || ""), u.pass_hash)) return send(res, 401, { error: "wrong" });
+    return send(res, 200, { token: tokens.issue(u), user: publicUser(u) });
+  }
+
+  if (url.pathname === "/api/me") {
+    const u = await currentUser(req);
+    if (!u) return send(res, 401, { error: "auth" });
+    if (req.method === "PUT") {
+      const b = await readBody(req);
+      const name = clean(b.name, 80) || u.name, phone = clean(b.phone, 20), address = clean(b.address, 300);
+      if (phone && !validPhone(phone)) return send(res, 400, { error: "phone" });
+      await db.run("UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?", [name, phone, address, u.id]);
+      return send(res, 200, { user: publicUser({ ...u, name, phone, address }) });
+    }
+    const orders = await db.all("SELECT id, items, total, status, payment, created_at FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50", [u.id]);
+    const bookings = await db.all("SELECT id, target_name, date, people, status, created_at FROM bookings WHERE user_id = ? ORDER BY created_at DESC LIMIT 50", [u.id]);
+    return send(res, 200, { user: publicUser(u), orders: orders.map((o) => ({ ...o, items: JSON.parse(o.items) })), bookings });
+  }
+
+  // ---------- Bookings and orders (guests allowed; linked to the account when signed in) ----------
   if (url.pathname === "/api/contact" && req.method === "POST") {
     const b = await readBody(req);
+    const u = await currentUser(req);
     const rec = {
-      id: "BK" + crypto.randomBytes(3).toString("hex").toUpperCase(),
-      at: new Date().toISOString(),
-      target: clean(b.target, 40), targetName: clean(b.targetName, 120),
-      name: clean(b.name, 80), phone: clean(b.phone, 20), date: clean(b.date, 20),
-      people: Math.max(1, Math.min(100, parseInt(b.people, 10) || 1)), note: clean(b.note, 500),
+      id: newId("BK"), user_id: u ? u.id : null,
+      target: clean(b.target, 40), target_name: clean(b.targetName, 120),
+      name: clean(b.name, 80), phone: clean(b.phone, 20), email: clean(b.email || (u && u.email), 254),
+      date: clean(b.date, 20), people: Math.max(1, Math.min(100, parseInt(b.people, 10) || 1)), note: clean(b.note, 500),
+      status: "new", created_at: now(),
     };
     if (!rec.name || !validPhone(rec.phone)) return send(res, 400, { error: "invalid" });
-    append("bookings.json", rec);
+    await db.run(`INSERT INTO bookings (id, user_id, target, target_name, name, phone, email, date, people, note, status, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [rec.id, rec.user_id, rec.target, rec.target_name, rec.name, rec.phone, rec.email, rec.date, rec.people, rec.note, rec.status, rec.created_at]);
+    pushToSheet("booking", rec);
     return send(res, 200, { ok: true, id: rec.id });
   }
 
   if (url.pathname === "/api/order" && req.method === "POST") {
     const b = await readBody(req);
+    const u = await currentUser(req);
     const items = (Array.isArray(b.items) ? b.items : [])
       .map((i) => ({ p: CONTENT.products.find((p) => p.id === i.id), qty: Math.max(1, Math.min(999, parseInt(i.qty, 10) || 1)) }))
       .filter((i) => i.p)
       .map((i) => ({ id: i.p.id, name: i.p.name.vi, seller: i.p.seller, price: i.p.price, qty: i.qty }));
     const rec = {
-      id: "DH" + crypto.randomBytes(3).toString("hex").toUpperCase(),
-      at: new Date().toISOString(),
-      name: clean(b.name, 80), phone: clean(b.phone, 20), address: clean(b.address, 300), note: clean(b.note, 500),
-      items, total: items.reduce((s, i) => s + i.price * i.qty, 0), status: "new",
+      id: newId("DH"), user_id: u ? u.id : null,
+      name: clean(b.name, 80), phone: clean(b.phone, 20), email: clean(b.email || (u && u.email), 254),
+      address: clean(b.address, 300), note: clean(b.note, 500),
+      payment: b.payment === "bank" ? "bank" : "cod",
+      items: JSON.stringify(items), total: items.reduce((s, i) => s + i.price * i.qty, 0),
+      status: "new", created_at: now(),
     };
     if (!rec.name || !validPhone(rec.phone) || !items.length) return send(res, 400, { error: "invalid" });
-    append("orders.json", rec);
+    if (rec.email && !validEmail(rec.email)) return send(res, 400, { error: "email" });
+    await db.run(`INSERT INTO orders (id, user_id, name, phone, email, address, note, payment, items, total, status, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [rec.id, rec.user_id, rec.name, rec.phone, rec.email, rec.address, rec.note, rec.payment, rec.items, rec.total, rec.status, rec.created_at]);
+    // Remember delivery details on the account for next time.
+    if (u && (!u.phone || !u.address)) await db.run("UPDATE users SET phone = ?, address = ? WHERE id = ?", [u.phone || rec.phone, u.address || rec.address, u.id]);
+    pushToSheet("order", rec);
     return send(res, 200, { ok: true, id: rec.id, total: rec.total });
+  }
+
+  // ---------- Admin ----------
+  if (url.pathname.startsWith("/api/admin/")) {
+    const u = await currentUser(req);
+    if (!u) return send(res, 401, { error: "auth" });
+    if (u.role !== "admin") return send(res, 403, { error: "forbidden" });
+    const sub = url.pathname.slice("/api/admin/".length);
+
+    if (sub === "summary" && req.method === "GET") {
+      const one = async (sql) => Number(Object.values((await db.get(sql)) || { n: 0 })[0]) || 0;
+      return send(res, 200, {
+        db: db.kind, persistent: db.persistent,
+        sheets: !!process.env.SHEETS_WEBHOOK_URL, sheetUrl: process.env.GOOGLE_SHEET_URL || "",
+        orders: await one("SELECT COUNT(*) AS n FROM orders"),
+        newOrders: await one("SELECT COUNT(*) AS n FROM orders WHERE status = 'new'"),
+        revenue: await one("SELECT COALESCE(SUM(total), 0) AS n FROM orders WHERE status <> 'cancelled'"),
+        bookings: await one("SELECT COUNT(*) AS n FROM bookings"),
+        newBookings: await one("SELECT COUNT(*) AS n FROM bookings WHERE status = 'new'"),
+        customers: await one("SELECT COUNT(*) AS n FROM users WHERE role = 'customer'"),
+      });
+    }
+    if (sub === "orders" && req.method === "GET") {
+      const st = url.searchParams.get("status");
+      const rows = ORDER_STATUS.includes(st)
+        ? await db.all("SELECT * FROM orders WHERE status = ? ORDER BY created_at DESC LIMIT 500", [st])
+        : await db.all("SELECT * FROM orders ORDER BY created_at DESC LIMIT 500");
+      return send(res, 200, { orders: rows.map((o) => ({ ...o, items: JSON.parse(o.items) })) });
+    }
+    if (sub === "bookings" && req.method === "GET") {
+      return send(res, 200, { bookings: await db.all("SELECT * FROM bookings ORDER BY created_at DESC LIMIT 500") });
+    }
+    if (sub === "customers" && req.method === "GET") {
+      return send(res, 200, { customers: await db.all("SELECT id, email, name, phone, address, created_at FROM users WHERE role = 'customer' ORDER BY created_at DESC LIMIT 1000") });
+    }
+    let m;
+    if ((m = /^(orders|bookings)\/([A-Z0-9]{4,20})$/.exec(sub)) && req.method === "PATCH") {
+      const b = await readBody(req);
+      const allowed = m[1] === "orders" ? ORDER_STATUS : BOOKING_STATUS;
+      if (!allowed.includes(b.status)) return send(res, 400, { error: "status" });
+      const r = await db.run(`UPDATE ${m[1]} SET status = ?, updated_at = ? WHERE id = ?`, [b.status, now(), m[2]]);
+      return send(res, r.changes ? 200 : 404, { ok: !!r.changes });
+    }
+    if (sub === "export/orders.csv") return sendFile(res, "don-hang.csv", "text/csv; charset=utf-8", csv(ORDER_COLUMNS, await db.all("SELECT * FROM orders ORDER BY created_at DESC")));
+    if (sub === "export/bookings.csv") return sendFile(res, "dat-lich.csv", "text/csv; charset=utf-8", csv(BOOKING_COLUMNS, await db.all("SELECT * FROM bookings ORDER BY created_at DESC")));
+    if (sub === "export/customers.csv") return sendFile(res, "khach-hang.csv", "text/csv; charset=utf-8",
+      csv([{ label: "Email", key: "email" }, { label: "Họ tên", key: "name" }, { label: "Điện thoại", key: "phone" }, { label: "Địa chỉ", key: "address" }, { label: "Ngày đăng ký", key: "created_at" }],
+        await db.all("SELECT email, name, phone, address, created_at FROM users WHERE role = 'customer' ORDER BY created_at DESC")));
+    if (sub === "export/data.sql") return sendFile(res, "cu-lao-gieng.sql", "application/sql; charset=utf-8", sqlDump({
+      orders: await db.all("SELECT * FROM orders ORDER BY created_at"),
+      bookings: await db.all("SELECT * FROM bookings ORDER BY created_at"),
+    }));
+    return send(res, 404, { error: "not found" });
   }
 
   send(res, 404, { error: "not found" });
@@ -204,15 +352,16 @@ function serveStatic(req, res, url) {
   });
 }
 
-http.createServer(async (req, res) => {
+const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   try {
     if (url.pathname === "/health") return send(res, 200, { ok: true, uptime: Math.round(process.uptime()) });
     // CORS: the Android app (Capacitor, origin https://localhost) calls the API and content.json cross-origin
     if (url.pathname.startsWith("/api/") || url.pathname === "/data/content.json") {
       res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      res.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
       if (req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
     }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
@@ -221,10 +370,18 @@ http.createServer(async (req, res) => {
     console.error(e);
     send(res, 500, { error: "server error" });
   }
-}).listen(PORT, () => {
-  console.log(`Cù Lao Giêng site: http://localhost:${PORT}  (AI: ${API_KEY ? MODEL : "offline mode — set GROQ_API_KEY in .env"})`);
-  startKeepAlive();
 });
+
+openDb(STORE)
+  .then(async (d) => {
+    db = d;
+    await ensureAdmin();
+    server.listen(PORT, () => {
+      console.log(`Cù Lao Giêng site: http://localhost:${PORT}  (AI: ${API_KEY ? MODEL : "offline mode — set GROQ_API_KEY in .env"}, DB: ${db.kind}${db.persistent ? "" : " — NOT persistent, set DATABASE_URL"})`);
+      startKeepAlive();
+    });
+  })
+  .catch((e) => { console.error("Database init failed:", e); process.exit(1); });
 
 // Keep-alive: Render free web services sleep after 15 min without inbound traffic.
 // Ping our own public URL every KEEP_ALIVE_MINUTES (default 10) so it stays awake.
