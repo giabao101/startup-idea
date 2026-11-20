@@ -185,7 +185,10 @@
         "vi": "Chua, giòn, mặn ngọt hài hòa — món nhậu và món ăn chơi đặc trưng vùng xoài.",
         "en": "Sour, crunchy, sweet and salty — a signature snack of mango country."
       },
-      "price": "40.000–70.000đ"
+      "price": "40.000–70.000đ",
+      "photo": {
+        "src": "img/food-goi-xoai.jpg"
+      }
     },
     {
       "id": "banh-xeo",
@@ -202,7 +205,10 @@
         "vi": "Bông điên điển vàng rực mùa nước nổi (tháng 8–11).",
         "en": "Golden sesbania flowers bloom in flood season (Aug–Nov)."
       },
-      "price": "20.000–40.000đ/cái"
+      "price": "20.000–40.000đ/cái",
+      "photo": {
+        "src": "img/food-banh-xeo.jpg"
+      }
     },
     {
       "id": "lau-mam",
@@ -219,7 +225,10 @@
         "vi": "Đậm đà, thơm mùi mắm — linh hồn ẩm thực An Giang.",
         "en": "Rich and pungent — the soul of An Giang cuisine."
       },
-      "price": "200.000–350.000đ/nồi"
+      "price": "200.000–350.000đ/nồi",
+      "photo": {
+        "src": "img/food-lau-mam.jpg"
+      }
     },
     {
       "id": "ca-linh",
@@ -236,7 +245,10 @@
         "vi": "Đặc sản mùa nước nổi.",
         "en": "A flood-season specialty."
       },
-      "price": "60.000–100.000đ"
+      "price": "60.000–100.000đ",
+      "photo": {
+        "src": "img/food-ca-linh.jpg"
+      }
     },
     {
       "id": "che-xoai",
@@ -253,7 +265,10 @@
         "vi": "Ngọt thanh, thơm lừng — nên thử tại vườn.",
         "en": "Fragrant and sweet — best tasted right at the orchard."
       },
-      "price": "15.000–30.000đ"
+      "price": "15.000–30.000đ",
+      "photo": {
+        "src": "img/food-che-xoai.jpg"
+      }
     },
     {
       "id": "banh-phong",
@@ -270,7 +285,10 @@
         "vi": "Làm thủ công, có thể xem người dân làm bánh.",
         "en": "Handmade — you can watch locals make them."
       },
-      "price": "30.000–50.000đ/xấp"
+      "price": "30.000–50.000đ/xấp",
+      "photo": {
+        "src": "img/food-banh-phong.jpg"
+      }
     }
   ],
   "eateries": [
@@ -487,7 +505,10 @@
         "vi": "Quanh năm, ban ngày",
         "en": "All year, daytime"
       },
-      "price": "Miễn phí tham quan"
+      "price": "Miễn phí tham quan",
+      "photo": {
+        "src": "img/lang-nghe.jpg"
+      }
     },
     {
       "id": "x8",
@@ -520,59 +541,31 @@
   "homestays": [
     {
       "id": "h1",
-      "lat": 10.496,
-      "lng": 105.5085,
-      "icon": "🏡",
-      "name": "Homestay Nhà Vườn Cù Lao (demo)",
-      "phone": "0900000301",
-      "zalo": "0900000301",
-      "price": "250.000–400.000đ/đêm",
+      "icon": "🏠",
+      "name": "Nhà Trọ Đặng Thành",
+      "phone": "",
+      "zalo": "",
+      "maps": "Nhà Trọ Đặng Thành Cù Lao Giêng An Giang",
+      "price": "Liên hệ",
       "desc": {
-        "vi": "Nhà gỗ giữa vườn xoài, có xe đạp miễn phí, bữa sáng quê.",
-        "en": "Wooden house in a mango garden, free bicycles, country breakfast."
+        "vi": "Nhà trọ trên cù lao Giêng. Gọi hoặc gửi yêu cầu đặt phòng để hỏi giá và phòng trống.",
+        "en": "Guesthouse on Cù Lao Giêng. Call or send a booking request to check rates and availability."
       },
-      "amenities": [
-        "wifi",
-        "bike",
-        "breakfast"
-      ]
+      "amenities": []
     },
     {
       "id": "h2",
-      "lat": 10.518,
-      "lng": 105.4935,
-      "icon": "🛖",
-      "name": "Homestay Bến Sông (demo)",
-      "phone": "0900000302",
-      "zalo": "0900000302",
-      "price": "300.000–500.000đ/đêm",
-      "desc": {
-        "vi": "Sát bờ sông, view hoàng hôn, có tour xuồng.",
-        "en": "Right on the riverbank, sunset view, boat tours."
-      },
-      "amenities": [
-        "wifi",
-        "boat",
-        "breakfast"
-      ]
-    },
-    {
-      "id": "h3",
-      "lat": 10.47,
-      "lng": 105.538,
       "icon": "🏠",
-      "name": "Nhà Dân Út Mến (demo)",
-      "phone": "0900000303",
-      "zalo": "0900000303",
-      "price": "150.000đ/người/đêm",
+      "name": "Nhà nghỉ Sỹ Hiền",
+      "phone": "",
+      "zalo": "",
+      "maps": "Nhà nghỉ Sỹ Hiền Cù Lao Giêng An Giang",
+      "price": "Liên hệ",
       "desc": {
-        "vi": "Ở cùng gia đình nông dân, nấu ăn cùng chủ nhà.",
-        "en": "Stay with a farming family and cook together."
+        "vi": "Nhà nghỉ trên cù lao Giêng. Gọi hoặc gửi yêu cầu đặt phòng để hỏi giá và phòng trống.",
+        "en": "Guesthouse on Cù Lao Giêng. Call or send a booking request to check rates and availability."
       },
-      "amenities": [
-        "meal",
-        "garden"
-      ]
+      "amenities": []
     }
   ],
   "products": [

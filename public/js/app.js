@@ -64,7 +64,10 @@
     const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
     return 2 * R * Math.asin(Math.sqrt(h));
   }
-  const directionsUrl = (p) => `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+  // Places without known coordinates (e.g. guesthouses) open a Google Maps search by name instead.
+  const directionsUrl = (p) => p.lat != null
+    ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.maps || p.name)}`;
 
   function allPoints() {
     const pts = [];
@@ -72,7 +75,7 @@
     DATA.eateries.forEach((e) => pts.push({ ...e, kind: "eatery", cat: "food", title: e.name, sub: L(e.dishes) }));
     DATA.homestays.forEach((h) => pts.push({ ...h, kind: "stay", cat: "stay", title: h.name, sub: L(h.desc) }));
     DATA.experiences.forEach((x) => pts.push({ ...x, kind: "exp", cat: "garden", title: L(x.name), sub: x.host }));
-    return pts;
+    return pts.filter((p) => p.lat != null && p.lng != null);
   }
   const sortedByDistance = (cat = "all") => {
     const origin = userPos || DATA.center;
@@ -263,11 +266,12 @@
   // Photo with a visible source credit (required when reusing others' images).
   function photoHtml(o, cls = "card-photo") {
     if (!o.photo) return "";
-    const credit = o.photo.href
+    const credit = !o.photo.credit ? "" : o.photo.href
       ? `<a href="${esc(o.photo.href)}" target="_blank" rel="noopener">${esc(o.photo.credit)}</a>`
       : esc(o.photo.credit);
-    return `<figure class="${cls}"><img src="${esc(o.photo.src)}" alt="${esc(L(o.name))}" loading="lazy" decoding="async" />
-      <figcaption>${t("exp.photoSrc")}: ${credit}</figcaption></figure>`;
+    const alt = typeof o.name === "string" ? o.name : L(o.name);
+    return `<figure class="${cls}"><img src="${esc(o.photo.src)}" alt="${esc(alt)}" loading="lazy" decoding="async" />
+      ${credit ? `<figcaption>${t("exp.photoSrc")}: ${credit}</figcaption>` : ""}</figure>`;
   }
   const amount = (v) => (lang === "en" ? { "Liên hệ": "Contact for price", "Miễn phí tham quan": "Free to visit", "Theo giá chợ": "Market price" }[v] || v : v);
 
@@ -382,7 +386,8 @@
 
   function renderFood() {
     $("#foodGrid").innerHTML = DATA.foods.map((f) => `
-      <article class="tile card">
+      <article class="tile card${f.photo ? " has-photo" : ""}">
+        ${photoHtml(f)}
         <div class="card-top"><span class="card-ic">${ic(f.id)}</span><h3>${esc(L(f.name))}</h3></div>
         <p>${esc(L(f.desc))}</p>
         <p class="meta"><b>${t("food.ingr")}:</b> ${esc(L(f.ingredients))}</p>
@@ -420,8 +425,8 @@
       <article class="tile card">
         <div class="card-top"><span class="card-ic">${ic(h.id, "home")}</span><h3>${esc(h.name)}</h3></div>
         <p>${esc(L(h.desc))}</p>
-        <div class="tag-row">${h.amenities.map((a) => `<span class="tag">${esc(t("amen." + a))}</span>`).join("")}</div>
-        <p class="price">${esc(h.price)}</p>
+        ${(h.amenities || []).length ? `<div class="tag-row">${h.amenities.map((a) => `<span class="tag">${esc(t("amen." + a))}</span>`).join("")}</div>` : ""}
+        <p class="price">${esc(amount(h.price))}</p>
         <div class="actions">
           <button class="btn primary small" type="button" data-book="stay:${h.id}">${icon("calendar")}${t("btn.book")}</button>
           ${contactButtons(h)}

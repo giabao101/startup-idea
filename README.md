@@ -7,7 +7,7 @@ Website du lịch cộng đồng Cù Lao Giêng (An Giang), song ngữ Việt/An
 - **Hướng dẫn viên AI** (Groq API, model openai/gpt-oss-120b): kể chuyện lịch sử, giải thích kiến trúc & giá trị văn hóa, hỏi đáp, gợi ý lịch trình. Không có API key → tự chạy chế độ ngoại tuyến.
 - **Ẩm thực**: món đặc sản, thành phần, giá tham khảo, gợi ý quán ăn.
 - **Trải nghiệm cùng người dân**: vườn xoài, vườn trái cây, làm bánh, đi xuồng — gọi / Zalo / gửi yêu cầu đặt lịch.
-- **Homestay**: thông tin, giá, đặt phòng.
+- **Nhà trọ**: Nhà Trọ Đặng Thành, Nhà nghỉ Sỹ Hiền; gọi, tìm trên Google Maps, gửi yêu cầu đặt phòng.
 - **Đặc sản**: giỏ hàng, đặt hàng (lưu vào `data/orders.json`).
 
 ## Chạy local

@@ -42,17 +42,17 @@ function knowledgeBase() {
   const f = CONTENT.foods.map((x) => `- ${x.name.vi} / ${x.name.en}: ${x.desc.vi} Thành phần: ${x.ingredients.vi}. Giá: ${x.price}`).join("\n");
   const e = CONTENT.eateries.map((x) => `- ${x.name}: ${x.dishes.vi}, ${x.price}, giờ ${x.hours}, ĐT ${x.phone}`).join("\n");
   const ex = CONTENT.experiences.map((x) => `- ${x.name.vi}: ${x.desc.vi} Chủ: ${x.host}, mùa: ${x.season.vi}, giá: ${x.price}, ĐT ${x.phone}`).join("\n");
-  const h = CONTENT.homestays.map((x) => `- ${x.name}: ${x.desc.vi} Giá ${x.price}, ĐT ${x.phone}`).join("\n");
+  const h = CONTENT.homestays.map((x) => `- ${x.name}: ${x.desc.vi} Giá ${x.price}${x.phone ? ", ĐT " + x.phone : ""}`).join("\n");
   const pr = CONTENT.products.map((x) => `- ${x.name.vi}: ${x.price}đ/${x.unit.vi} (người bán ${x.seller})`).join("\n");
   return `ĐIỂM THAM QUAN:\n${p}\n\nMÓN ĂN:\n${f}\n\nQUÁN ĂN:\n${e}\n\nTRẢI NGHIỆM:\n${ex}\n\nHOMESTAY:\n${h}\n\nSẢN PHẨM BÁN TRÊN WEB:\n${pr}`;
 }
 
 function systemPrompt(lang, userPos) {
   return `Bạn là hướng dẫn viên du lịch AI thân thiện của Cù Lao Giêng (Chợ Mới, An Giang, Việt Nam) — cù lao giữa sông Tiền, nổi tiếng là "vùng đất thánh" với nhà thờ, tu viện cổ và vườn xoài.
-Nhiệm vụ: giới thiệu lịch sử, giải thích kiến trúc và giá trị văn hóa, kể chuyện lịch sử sinh động, gợi ý món ăn, quán ăn, giá cả, trải nghiệm vườn trái cây, homestay, lịch trình.
+Nhiệm vụ: giới thiệu lịch sử, giải thích kiến trúc và giá trị văn hóa, kể chuyện lịch sử sinh động, gợi ý món ăn, quán ăn, giá cả, trải nghiệm vườn trái cây, nhà trọ/nhà nghỉ, lịch trình.
 Trả lời bằng ${lang === "en" ? "TIẾNG ANH (English)" : "TIẾNG VIỆT"}, ngắn gọn (tối đa ~200 từ), dùng gạch đầu dòng khi liệt kê. Chỉ viết văn bản thuần: không dùng markdown, không dùng ** hay #.
-Ưu tiên dữ liệu dưới đây. Nếu không chắc chắn một sự kiện lịch sử (năm, tên người), hãy nói rõ là chưa chắc thay vì bịa. Dữ liệu người dân/quán/homestay hiện là dữ liệu mẫu (demo).
-Khi gợi ý trải nghiệm, homestay hoặc mua hàng, nhắc khách dùng nút "Đặt lịch" / "Thêm vào giỏ" trên website.
+Ưu tiên dữ liệu dưới đây. Nếu không chắc chắn một sự kiện lịch sử (năm, tên người), hãy nói rõ là chưa chắc thay vì bịa. Dữ liệu người dân/quán hiện là dữ liệu mẫu (demo). Nhà trọ chưa có giá và số điện thoại: khuyên khách bấm "Đặt lịch" hoặc tìm trên Google Maps.
+Khi gợi ý trải nghiệm, nhà trọ hoặc mua hàng, nhắc khách dùng nút "Đặt lịch" / "Thêm vào giỏ" trên website.
 ${userPos ? `Vị trí hiện tại của khách: ${userPos.lat},${userPos.lng}.` : ""}
 
 DỮ LIỆU:
@@ -101,15 +101,15 @@ function offlineAnswer(q, lang) {
     return CONTENT.foods.map((f) => `• ${L(f.name)} (${f.price}): ${L(f.desc)}`).join("\n");
   if (/xoài|mango|trái|fruit|vườn|garden/.test(s))
     return CONTENT.experiences.map((x) => `• ${L(x.name)} — ${L(x.season)} — ${x.price}`).join("\n");
-  if (/homestay|ngủ|ở đâu|stay|sleep|hotel/.test(s))
+  if (/homestay|nhà trọ|nhà nghỉ|ngủ|ở đâu|stay|sleep|hotel|guesthouse/.test(s))
     return CONTENT.homestays.map((h) => `• ${h.name}: ${h.price} — ${L(h.desc)}`).join("\n");
   if (/lịch trình|itinerar|1 ngày|one.day|plan/.test(s))
     return lang === "en"
       ? "• 7:00 Breakfast at Tan My market\n• 8:30 Cu Lao Gieng Church & Franciscan Monastery\n• 10:30 Mango orchard tour\n• 12:00 Lunch: fish hotpot, mango salad\n• 14:00 Rice cracker workshop\n• 16:30 Boat trip & sunset on the Tien River"
       : "• 7:00 Ăn sáng chợ Tấn Mỹ\n• 8:30 Nhà thờ Cù Lao Giêng & Tu viện Phanxicô\n• 10:30 Tham quan vườn xoài\n• 12:00 Ăn trưa: lẩu mắm, gỏi xoài\n• 14:00 Học làm bánh phồng\n• 16:30 Đi xuồng ngắm hoàng hôn sông Tiền";
   return lang === "en"
-    ? "I can tell you about the church, monasteries, mango orchards, local food, homestays or a one-day itinerary. What would you like to know?"
-    : "Tôi có thể giới thiệu nhà thờ, tu viện, vườn xoài, món ăn, homestay hoặc lịch trình 1 ngày. Bạn muốn biết gì?";
+    ? "I can tell you about the church, monasteries, mango orchards, local food, guesthouses or a one-day itinerary. What would you like to know?"
+    : "Tôi có thể giới thiệu nhà thờ, tu viện, vườn xoài, món ăn, nhà trọ hoặc lịch trình 1 ngày. Bạn muốn biết gì?";
 }
 
 // --- helpers ---
