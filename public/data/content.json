@@ -328,14 +328,19 @@
         "en": "Mango orchard tour & picking"
       },
       "desc": {
-        "vi": "Dạo vườn xoài, nghe chủ vườn kể chuyện trồng xoài, tự hái và ăn tại chỗ.",
-        "en": "Walk the orchard, hear the farmer's story, pick and eat mangoes on the spot."
+        "vi": "Dạo giữa những hàng xoài đang đậu trái, nghe chủ vườn kể cách chăm cây, bao trái, hái xoài, rồi ăn xoài chín ngay tại vườn. Cù lao có vùng xoài lớn trồng theo hướng VietGAP.",
+        "en": "Walk rows of fruiting mango trees, hear how growers tend, bag and harvest the fruit, then eat ripe mango on the spot. The island grows mango on a large scale, much of it VietGAP-certified."
       },
       "season": {
         "vi": "Tháng 3–5 (xoài chính vụ), có xoài nghịch vụ",
         "en": "Mar–May (main season), off-season available"
       },
-      "price": "50.000đ/người"
+      "price": "50.000đ/người",
+      "photo": {
+        "src": "img/vuon-xoai.jpg",
+        "credit": "Chưa rõ nguồn (ảnh do chủ trang cung cấp)",
+        "href": ""
+      }
     },
     {
       "id": "x2",
@@ -350,14 +355,19 @@
         "en": "Mixed fruit garden"
       },
       "desc": {
-        "vi": "Nhãn, chuối, mít, ổi… thưởng thức trái cây theo mùa, đi cầu khỉ, bắt cá mương.",
-        "en": "Longan, banana, jackfruit, guava… seasonal fruit, monkey bridges, catching fish in canals."
+        "vi": "Vườn trái cây miệt vườn với giàn nho, ổi, mít, chuối theo mùa. Đi lối nhỏ giữa vườn, chụp ảnh với chủ vườn và mua trái cây hái tại chỗ.",
+        "en": "A riverside fruit garden with grape arbours, guava, jackfruit and bananas in season. Wander the paths, take photos with the grower and buy fruit picked on the spot."
       },
       "season": {
         "vi": "Quanh năm",
         "en": "All year"
       },
-      "price": "40.000đ/người"
+      "price": "40.000đ/người",
+      "photo": {
+        "src": "img/vuon-trai-cay.jpg",
+        "credit": "Lang thang An Giang",
+        "href": ""
+      }
     },
     {
       "id": "x3",
@@ -390,18 +400,121 @@
       "phone": "0900000204",
       "zalo": "0900000204",
       "name": {
-        "vi": "Đi xuồng quanh cù lao",
-        "en": "Boat trip around the island"
+        "vi": "Đi xuồng, ngắm hoàng hôn và nghe đờn ca tài tử",
+        "en": "Boat trip, sunset and đờn ca tài tử music"
       },
       "desc": {
-        "vi": "Ngồi xuồng ngắm sông Tiền, làng ven sông, hoàng hôn.",
-        "en": "Boat along the Tien River, riverside villages and sunset."
+        "vi": "Ngồi xuồng dọc sông Tiền ngang qua bè cá và làng ven sông, ngắm hoàng hôn, rồi nghe đờn ca tài tử Nam Bộ. Có thể lên cầu Mỹ Luông – Tấn Mỹ để nhìn toàn cảnh cù lao.",
+        "en": "Glide along the Tien River past fish-farm rafts and riverside villages at sunset, then listen to southern đờn ca tài tử folk music. The Mỹ Luông – Tấn Mỹ bridge gives a view over the whole island."
       },
       "season": {
         "vi": "Quanh năm",
         "en": "All year"
       },
       "price": "150.000đ/chuyến (4 người)"
+    },
+    {
+      "id": "x5",
+      "icon": "leaf",
+      "lat": 10.4935,
+      "lng": 105.511,
+      "host": "Vườn sinh thái Út Hùm",
+      "phone": "",
+      "zalo": "",
+      "name": {
+        "vi": "Vườn sinh thái Út Hùm",
+        "en": "Út Hùm eco-garden"
+      },
+      "desc": {
+        "vi": "Khu vườn khoảng 6.000 m² ở ấp Tấn Phước, xã Tấn Mỹ, trồng sơ ri, ổi, mít, dừa xiêm và xoài. Có nhà sàn trên mương, cầu tre, xích đu dưới hàng dừa; chủ vườn dẫn khách xem cách trồng và thu hoạch xoài, mời xoài chín, trà hoặc dừa tươi. Có homestay cho khách ở lại.",
+        "en": "About 6,000 m² in Tấn Phước hamlet, Tấn Mỹ, planted with acerola, guava, jackfruit, coconut and mango. Stilt house over the canal, bamboo bridges and hammocks under the palms; the owner shows how mangoes are grown and picked and serves ripe mango, tea or fresh coconut. Homestay rooms available."
+      },
+      "season": {
+        "vi": "Quanh năm",
+        "en": "All year"
+      },
+      "price": "Liên hệ",
+      "photo": {
+        "src": "https://thamhiemmekong.com/wp-content/uploads/2019/10/vuon-sinh-thai-ut-hum.jpg",
+        "credit": "Thám Hiểm Mekong",
+        "href": "https://thamhiemmekong.com/thong-tin-du-lich-mien-tay/kham-pha-cu-lao-gieng.html"
+      }
+    },
+    {
+      "id": "x6",
+      "icon": "leaf",
+      "lat": 10.487,
+      "lng": 105.556,
+      "host": "Khu du lịch sinh thái Cồn Én",
+      "phone": "",
+      "zalo": "",
+      "name": {
+        "vi": "Khu du lịch sinh thái Cồn Én",
+        "en": "Cồn Én eco-park"
+      },
+      "desc": {
+        "vi": "Khu sinh thái ven sông Tiền, nổi tiếng với bộ sưu tập gỗ lũa: những gốc cây bị nước và thời gian mài thành hình thù lạ. Hợp để dạo mát và chụp ảnh. Vị trí trên bản đồ là gần đúng.",
+        "en": "A riverside eco-park on the Tien River known for its driftwood collection: tree roots shaped by water and time into striking forms. Good for a stroll and photos. Map position is approximate."
+      },
+      "season": {
+        "vi": "Quanh năm",
+        "en": "All year"
+      },
+      "price": "Liên hệ",
+      "photo": {
+        "src": "https://thamhiemmekong.com/wp-content/uploads/2019/11/khudulichconen-1024x701.jpg",
+        "credit": "Thám Hiểm Mekong",
+        "href": "https://thamhiemmekong.com/thong-tin-du-lich-mien-tay/kham-pha-cu-lao-gieng.html"
+      }
+    },
+    {
+      "id": "x7",
+      "icon": "boat",
+      "lat": 10.482,
+      "lng": 105.529,
+      "host": "Làng nghề Cù Lao Giêng",
+      "phone": "",
+      "zalo": "",
+      "name": {
+        "vi": "Làng nghề đóng xuồng và đan giỏ",
+        "en": "Boat-building and basket-weaving villages"
+      },
+      "desc": {
+        "vi": "Xem thợ đóng xuồng ở Mỹ Hiệp, người dân đan giỏ ở Tấn Mỹ và các xưởng mộc ở Long Điền A, những nghề gắn với đời sống sông nước của cù lao.",
+        "en": "Watch boat builders in Mỹ Hiệp, basket weavers in Tấn Mỹ and the carpentry workshops of Long Điền A, crafts tied to life on the river."
+      },
+      "season": {
+        "vi": "Quanh năm, ban ngày",
+        "en": "All year, daytime"
+      },
+      "price": "Miễn phí tham quan"
+    },
+    {
+      "id": "x8",
+      "icon": "mango",
+      "lat": 10.5008,
+      "lng": 105.5035,
+      "host": "Chợ Tấn Mỹ và cơ sở làm dưa xoài",
+      "phone": "",
+      "zalo": "",
+      "name": {
+        "vi": "Thưởng thức và mua dưa xoài",
+        "en": "Taste and buy pickled mango"
+      },
+      "desc": {
+        "vi": "Dưa xoài là đặc sản nổi tiếng của cù lao: xoài non ngâm muối rồi ướp nước đường thắng với ớt, giòn tự nhiên, ăn kèm muối ớt. Mua tại chợ Tấn Mỹ, các vườn xoài hoặc cơ sở làm dưa trên cù lao. Món dân dã khác nên thử: cá bông lau, xôi phồng, dưa cóc.",
+        "en": "Pickled mango is the island's signature: young mango brined, then marinated in caramelised sugar syrup with chilli, naturally crunchy, eaten with chilli salt. Buy at Tấn Mỹ market, the orchards or the island's pickling workshops. Also try bông lau fish, puffed sticky rice and pickled ambarella."
+      },
+      "season": {
+        "vi": "Quanh năm",
+        "en": "All year"
+      },
+      "price": "Theo giá chợ",
+      "photo": {
+        "src": "https://thamhiemmekong.com/wp-content/uploads/2019/11/dua-xoai.jpg",
+        "credit": "Thám Hiểm Mekong",
+        "href": "https://thamhiemmekong.com/thong-tin-du-lich-mien-tay/kham-pha-cu-lao-gieng.html"
+      }
     }
   ],
   "homestays": [
@@ -570,6 +683,12 @@
         "vi": "Thủ công mỹ nghệ địa phương.",
         "en": "Local handicraft."
       }
+    }
+  ],
+  "_sources": [
+    {
+      "name": "Thám Hiểm Mekong — Khám phá cù lao Giêng",
+      "url": "https://thamhiemmekong.com/thong-tin-du-lich-mien-tay/kham-pha-cu-lao-gieng.html"
     }
   ]
 }

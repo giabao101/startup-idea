@@ -60,7 +60,7 @@ const ICON_FOR = {
   "nha-tho": "church", "tu-vien-phanxico": "landmark", "quan-phong": "school", "ben-do": "boat",
   "vuon-xoai-my-hiep": "mango", "cho-que": "basket",
   "goi-xoai": "leaf", "banh-xeo": "pancake", "lau-mam": "bowl", "ca-linh": "fish", "che-xoai": "cup", "banh-phong": "cracker",
-  x1: "mango", x2: "banana", x3: "cracker", x4: "boat",
+  x1: "mango", x2: "banana", x3: "cracker", x4: "boat", x5: "leaf", x6: "sunset", x7: "boat", x8: "jar",
   h1: "home", h2: "sunset", h3: "user",
   p1: "mango", p2: "leaf", p3: "cracker", p4: "jar", p5: "banana", p6: "basket",
   e1: "bowl", e2: "pancake", e3: "leaf"

@@ -260,6 +260,17 @@
     lastFocus && lastFocus.focus && lastFocus.focus();
   }
 
+  // Photo with a visible source credit (required when reusing others' images).
+  function photoHtml(o, cls = "card-photo") {
+    if (!o.photo) return "";
+    const credit = o.photo.href
+      ? `<a href="${esc(o.photo.href)}" target="_blank" rel="noopener">${esc(o.photo.credit)}</a>`
+      : esc(o.photo.credit);
+    return `<figure class="${cls}"><img src="${esc(o.photo.src)}" alt="${esc(L(o.name))}" loading="lazy" decoding="async" />
+      <figcaption>${t("exp.photoSrc")}: ${credit}</figcaption></figure>`;
+  }
+  const amount = (v) => (lang === "en" ? { "Liên hệ": "Contact for price", "Miễn phí tham quan": "Free to visit", "Theo giá chợ": "Market price" }[v] || v : v);
+
   function contactButtons(o) {
     return `
       ${o.phone ? `<a class="btn ghost small" href="tel:${esc(o.phone)}">${icon("phone")}${t("btn.call")}</a>` : ""}
@@ -298,10 +309,11 @@
     const today = new Date().toISOString().slice(0, 10);
     openModal(`
       <h2><span class="card-ic">${ic(o.id)}</span>${esc(title)}</h2>
+      ${photoHtml(o, "modal-photo")}
       <p style="margin-top:.6rem">${esc(L(o.desc))}</p>
       ${o.host ? `<p class="meta">${t("exp.host")}: ${esc(o.host)}</p>` : ""}
       ${o.season ? `<p class="meta">${t("exp.season")}: ${esc(L(o.season))}</p>` : ""}
-      <p class="price" style="margin-top:.3rem">${esc(o.price)}</p>
+      <p class="price" style="margin-top:.3rem">${esc(amount(o.price))}</p>
       <div class="actions">${contactButtons(o)}</div>
       <h4>${t("book.title")}</h4>
       <form class="form" id="bookForm">
@@ -390,11 +402,12 @@
 
   function renderExp() {
     $("#expGrid").innerHTML = DATA.experiences.map((x) => `
-      <article class="tile card">
+      <article class="tile card${x.photo ? " has-photo" : ""}">
+        ${photoHtml(x)}
         <div class="card-top"><span class="card-ic">${ic(x.id)}</span><h3>${esc(L(x.name))}</h3></div>
         <p>${esc(L(x.desc))}</p>
         <p class="meta">${t("exp.host")}: ${esc(x.host)}<br>${t("exp.season")}: ${esc(L(x.season))}</p>
-        <p class="price">${esc(x.price)}</p>
+        <p class="price">${esc(amount(x.price))}</p>
         <div class="actions">
           <button class="btn primary small" type="button" data-book="exp:${x.id}">${icon("calendar")}${t("btn.book")}</button>
           ${contactButtons(x)}
@@ -629,7 +642,6 @@
   window.CLG = { API, t, esc, money, toast, route, openModal, closeModal, getLang: () => lang };
 
   // ---------- Boot ----------
-  $("#brandIcon").innerHTML = icon("mango");
   paintIcons();
   applyLang();
   syncAccount();

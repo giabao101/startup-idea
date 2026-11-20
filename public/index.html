@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#d3ecfb" />
   <title>Cù Lao Giêng — Trợ lý du lịch AI</title>
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="apple-touch-icon" href="img/logo-192.png" />
+  <meta property="og:image" content="img/logo-512.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -16,7 +19,7 @@
 
   <header class="topbar glass">
     <a class="brand" href="#home">
-      <span class="avatar" id="brandIcon"></span>
+      <img class="avatar logo" src="img/logo-96.png" srcset="img/logo-96.png 1x, img/logo-192.png 2x" width="40" height="40" alt="Logo xã Cù Lao Giêng" />
       <span class="brand-text" data-i18n="welcome">Chào mừng đến Cù Lao Giêng</span>
     </a>
     <button class="prompt-pill" id="promptPill" type="button">
@@ -167,6 +170,8 @@
     <section class="view" data-view="experience" id="view-experience">
       <div class="view-head"><div><h1 data-i18n="exp.title"></h1><p class="muted lede" data-i18n="exp.sub"></p></div></div>
       <div id="expGrid" class="grid"></div>
+      <p class="sources muted small"><span data-i18n="exp.sources">Nguồn thông tin</span>:
+        <a href="https://thamhiemmekong.com/thong-tin-du-lich-mien-tay/kham-pha-cu-lao-gieng.html" target="_blank" rel="noopener">Thám Hiểm Mekong, “Khám phá cù lao Giêng”</a>.</p>
     </section>
 
     <!-- STAY -->

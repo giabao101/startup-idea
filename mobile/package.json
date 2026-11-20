@@ -5,7 +5,7 @@
   "description": "Android app Cù Lao Giêng: the website UI packaged with Capacitor",
   "scripts": {
     "copy-web": "node scripts/copy-web.js",
-    "icons": "capacitor-assets generate --android --iconBackgroundColor \"#0369a1\" --splashBackgroundColor \"#d3ecfb\"",
+    "icons": "capacitor-assets generate --android --iconBackgroundColor \"#ffffff\" --splashBackgroundColor \"#d3ecfb\"",
     "sync": "npm run copy-web && cap sync android"
   },
   "dependencies": {
