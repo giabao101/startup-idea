@@ -356,7 +356,7 @@
       "price": "50.000đ/người",
       "photo": {
         "src": "img/vuon-xoai.jpg",
-        "credit": "Chưa rõ nguồn (ảnh do chủ trang cung cấp)",
+        "credit": "",
         "href": ""
       }
     },
@@ -386,50 +386,6 @@
         "credit": "Lang thang An Giang",
         "href": ""
       }
-    },
-    {
-      "id": "x3",
-      "icon": "🍘",
-      "lat": 10.499,
-      "lng": 105.506,
-      "host": "Bà Năm (demo)",
-      "phone": "0900000203",
-      "zalo": "0900000203",
-      "name": {
-        "vi": "Học làm bánh phồng, bánh tráng",
-        "en": "Rice cracker making class"
-      },
-      "desc": {
-        "vi": "Cùng người dân quết bột, cán bánh, phơi bánh.",
-        "en": "Pound dough, roll and sun-dry crackers with locals."
-      },
-      "season": {
-        "vi": "Quanh năm (mùa khô đẹp nhất)",
-        "en": "All year (best in dry season)"
-      },
-      "price": "80.000đ/người"
-    },
-    {
-      "id": "x4",
-      "icon": "🚣",
-      "lat": 10.5235,
-      "lng": 105.4925,
-      "host": "Anh Bảy (demo)",
-      "phone": "0900000204",
-      "zalo": "0900000204",
-      "name": {
-        "vi": "Đi xuồng, ngắm hoàng hôn và nghe đờn ca tài tử",
-        "en": "Boat trip, sunset and đờn ca tài tử music"
-      },
-      "desc": {
-        "vi": "Ngồi xuồng dọc sông Tiền ngang qua bè cá và làng ven sông, ngắm hoàng hôn, rồi nghe đờn ca tài tử Nam Bộ. Có thể lên cầu Mỹ Luông – Tấn Mỹ để nhìn toàn cảnh cù lao.",
-        "en": "Glide along the Tien River past fish-farm rafts and riverside villages at sunset, then listen to southern đờn ca tài tử folk music. The Mỹ Luông – Tấn Mỹ bridge gives a view over the whole island."
-      },
-      "season": {
-        "vi": "Quanh năm",
-        "en": "All year"
-      },
-      "price": "150.000đ/chuyến (4 người)"
     },
     {
       "id": "x5",

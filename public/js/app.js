@@ -266,12 +266,14 @@
   // Photo with a visible source credit (required when reusing others' images).
   function photoHtml(o, cls = "card-photo") {
     if (!o.photo) return "";
-    const credit = !o.photo.credit ? "" : o.photo.href
+    // Every photo is captioned "Nguồn: Sưu tầm"; a known origin is added in brackets (linked when href is set).
+    const origin = !o.photo.credit ? "" : o.photo.href
       ? `<a href="${esc(o.photo.href)}" target="_blank" rel="noopener">${esc(o.photo.credit)}</a>`
       : esc(o.photo.credit);
+    const credit = t("photo.collected") + (origin ? ` (${origin})` : "");
     const alt = typeof o.name === "string" ? o.name : L(o.name);
     return `<figure class="${cls}"><img src="${esc(o.photo.src)}" alt="${esc(alt)}" loading="lazy" decoding="async" />
-      ${credit ? `<figcaption>${t("exp.photoSrc")}: ${credit}</figcaption>` : ""}</figure>`;
+      <figcaption>${t("exp.photoSrc")}: ${credit}</figcaption></figure>`;
   }
   const amount = (v) => (lang === "en" ? { "Liên hệ": "Contact for price", "Miễn phí tham quan": "Free to visit", "Theo giá chợ": "Market price" }[v] || v : v);
 
@@ -361,8 +363,8 @@
       ["8:30", "plan.2", "church", "place:nha-tho"],
       ["10:30", "plan.3", "mango", "exp:x1"],
       ["12:00", "plan.4", "bowl", "eatery:e1"],
-      ["14:00", "plan.5", "cracker", "exp:x3"],
-      ["16:30", "plan.6", "sunset", "exp:x4"],
+      ["14:00", "plan.5", "leaf", "exp:x5"],
+      ["16:30", "plan.6", "sunset", "exp:x6"],
     ];
     $("#planList").innerHTML = plan.map(([time, k, ico, key]) => `
       <li><button type="button" data-focus="${key}">
