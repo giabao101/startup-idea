@@ -417,8 +417,8 @@
     {
       "id": "x6",
       "icon": "leaf",
-      "lat": 10.487,
-      "lng": 105.556,
+      "lat": 10.53869,
+      "lng": 105.4921,
       "host": "Khu du lịch sinh thái Cồn Én",
       "phone": "",
       "zalo": "",
@@ -427,8 +427,8 @@
         "en": "Cồn Én eco-park"
       },
       "desc": {
-        "vi": "Khu sinh thái ven sông Tiền, nổi tiếng với bộ sưu tập gỗ lũa: những gốc cây bị nước và thời gian mài thành hình thù lạ. Hợp để dạo mát và chụp ảnh. Vị trí trên bản đồ là gần đúng.",
-        "en": "A riverside eco-park on the Tien River known for its driftwood collection: tree roots shaped by water and time into striking forms. Good for a stroll and photos. Map position is approximate."
+        "vi": "Khu sinh thái ven sông Tiền, nổi tiếng với bộ sưu tập gỗ lũa: những gốc cây bị nước và thời gian mài thành hình thù lạ. Hợp để dạo mát và chụp ảnh. Địa chỉ: ấp Tấn Long, xã Cù Lao Giêng.",
+        "en": "A riverside eco-park on the Tien River known for its driftwood collection: tree roots shaped by water and time into striking forms. Good for a stroll and photos. Address: Tấn Long hamlet, Cù Lao Giêng."
       },
       "season": {
         "vi": "Quanh năm",
@@ -439,7 +439,8 @@
         "src": "https://thamhiemmekong.com/wp-content/uploads/2019/11/khudulichconen-1024x701.jpg",
         "credit": "Thám Hiểm Mekong",
         "href": "https://thamhiemmekong.com/thong-tin-du-lich-mien-tay/kham-pha-cu-lao-gieng.html"
-      }
+      },
+      "maps": "Khu Du Lịch Sinh Thái Cồn Én, Ấp Tấn Long, Cù Lao Giêng, An Giang"
     },
     {
       "id": "x7",
